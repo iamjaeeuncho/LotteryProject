@@ -8,7 +8,7 @@ public class Layout {
         // Create a JFrame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 500);
+        frame.setSize(900, 500);
 
         // Create a JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
