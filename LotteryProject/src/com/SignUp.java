@@ -5,34 +5,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SignUp extends JFrame implements ActionListener {
+public class SignUp extends JPanel implements ActionListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton registerButton;
 
     public SignUp() {
-        setTitle("User Registration Form");
-        setSize(300, 150);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2));
+        // JPanel initialization
+        setLayout(new GridLayout(3, 2)); // Set layout for the JPanel
 
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
-        panel.add(usernameLabel);
-        panel.add(usernameField);
+        add(usernameLabel);
+        add(usernameField);
 
         JLabel passwordLabel = new JLabel("Password:");
         passwordField = new JPasswordField();
-        panel.add(passwordLabel);
-        panel.add(passwordField);
+        add(passwordLabel);
+        add(passwordField);
 
         registerButton = new JButton("Register");
         registerButton.addActionListener(this);
-        panel.add(registerButton);
-
-        add(panel);
+        add(registerButton);
     }
 
     @Override
@@ -49,9 +43,14 @@ public class SignUp extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(() -> {
-        	SignUp form = new com.SignUp();
-            form.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            SignUp form = new SignUp();
+            // Create a JFrame to hold the SignUp panel
+            JFrame frame = new JFrame("User Registration Form");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 150);
+            frame.add(form); // Add SignUp panel to the frame
+            frame.setVisible(true);
         });
     }
 }
