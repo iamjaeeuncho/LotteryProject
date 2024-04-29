@@ -5,12 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SignUp extends JPanel implements ActionListener {
+public class SignIn extends JPanel implements ActionListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton registerButton;
+    private JButton SignInButton;
+    private JButton SignUpButton;
 
-    public SignUp() {
+    public SignIn() {
         // JPanel initialization
         setLayout(new GridLayout(3, 2)); // Set layout for the JPanel
 
@@ -24,14 +25,18 @@ public class SignUp extends JPanel implements ActionListener {
         add(passwordLabel);
         add(passwordField);
 
-        registerButton = new JButton("Register");
-        registerButton.addActionListener(this);
-        add(registerButton);
+        SignInButton = new JButton("Sign In");
+        SignInButton.addActionListener(this);
+        add(SignInButton);
+        
+        SignUpButton = new JButton("Sign Up");
+        SignUpButton.addActionListener(this);
+        add(SignUpButton);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == registerButton) {
+        if (e.getSource() == SignInButton) {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
 
@@ -44,7 +49,7 @@ public class SignUp extends JPanel implements ActionListener {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            SignUp form = new SignUp();
+            SignIn form = new SignIn();
             // Create a JFrame to hold the SignUp panel
             JFrame frame = new JFrame("User Registration Form");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -16,7 +16,7 @@ public class Layout {
         // Create panels for each tab
         JPanel panel1 = new JPanel();
 //        panel1.setBackground(Color.RED);
-        SignUp signUpPanel = new SignUp();
+        SignIn signUpPanel = new SignIn();
         panel1.add(signUpPanel); // Add OtherComponent to the panel
         
         JPanel panel2 = new JPanel();
