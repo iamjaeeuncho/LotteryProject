@@ -8,19 +8,20 @@ public class Layout {
         // Create a JFrame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1200, 800);
+        frame.setSize(800, 600);
 
         // Create a JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Create panels for each tab
         JPanel panel1 = new JPanel();
-//        panel1.setBackground(Color.RED);
         SignIn signUpPanel = new SignIn();
-        panel1.add(signUpPanel); // Add OtherComponent to the panel
+        panel1.add(signUpPanel);
         
         JPanel panel2 = new JPanel();
-        panel2.setBackground(Color.GREEN);
+        PurchaseNumber purchaseNumberPanel = new PurchaseNumber();
+        panel2.add(purchaseNumberPanel);
+        
         JPanel panel3 = new JPanel();
         panel3.setBackground(Color.BLUE);
         JPanel panel4 = new JPanel();
