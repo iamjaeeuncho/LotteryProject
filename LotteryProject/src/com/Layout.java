@@ -1,43 +1,52 @@
 package com;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
-public class Layout {
-    public static void main(String[] args) {
-        // Create a JFrame
-        JFrame frame = new JFrame("JTabbedPane Example");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 500);
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-        // Create a JTabbedPane
-        JTabbedPane tabbedPane = new JTabbedPane();
+public class Layout extends JFrame {
 
-        // Create panels for each tab
-        JPanel panel1 = new JPanel();
-        SignIn signUpPanel = new SignIn();
-        panel1.add(signUpPanel);
-        
-        JPanel panel2 = new JPanel();
-        PurchaseNumber purchaseNumberPanel = new PurchaseNumber();
-        panel2.add(purchaseNumberPanel);
-        
-        JPanel panel3 = new JPanel();
-        panel3.setBackground(Color.BLUE);
-        JPanel panel4 = new JPanel();
-        panel4.setBackground(Color.YELLOW);
+	public Layout() {
+		setTitle("프레임 만들기");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // JFrame닫을 때 JVM 종료
+		setSize(1000, 900); // 프레임 크기 설정
 
-        // Add panels to the tabbed pane with titles
-        tabbedPane.addTab("메인", panel1);
-        tabbedPane.addTab("복권구매", panel2);
-        tabbedPane.addTab("구매내역", panel3);
-        tabbedPane.addTab("채팅", panel4);
+		JLabel label = new JLabel("이미지 넣기");
+		label.setPreferredSize(new Dimension(400, 40));
+		JButton main = new JButton("메인 페이지");
+		main.setPreferredSize(new Dimension(110, 40));
+		JButton Purchase = new JButton("복권 구매");
+		Purchase.setPreferredSize(new Dimension(110, 40));
+		JButton myPage = new JButton("내 정보");
+		myPage.setPreferredSize(new Dimension(110, 40));
+		JButton chat = new JButton("채팅");
+		chat.setPreferredSize(new Dimension(110, 40));
+		JButton logout = new JButton("로그아웃");
+		logout.setPreferredSize(new Dimension(110, 40));
 
-        // Add the tabbed pane to the frame
-        frame.add(tabbedPane, BorderLayout.CENTER);
+		setLayout(new BorderLayout()); // 배치 관리자 설정
 
-        // Display the frame
-        frame.setVisible(true);
-    }
+		// BorderLayout은 하나의 영역에 하나의 컴포넌트만 올 수 있다.
+		// 패널에 적용해서 패널을 넣어야 됨
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+		panel.add(label);
+		panel.add(main);
+		panel.add(Purchase);
+		panel.add(myPage);
+		panel.add(chat);
+		panel.add(logout);
+
+		add("North", panel);
+		setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		Layout layout=new Layout();
+	}
 }
-
