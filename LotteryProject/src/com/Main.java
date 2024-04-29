@@ -9,10 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Layout extends JFrame {
+public class Main extends JFrame {
 
-	public Layout() {
-		setTitle("프레임 만들기");
+	public Main() {
+		setTitle("가슴속에 복권 한장");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // JFrame닫을 때 JVM 종료
 		setSize(1000, 900); // 프레임 크기 설정
 
@@ -42,11 +42,17 @@ public class Layout extends JFrame {
 		panel.add(chat);
 		panel.add(logout);
 
+		JPanel panel2 = new JPanel();
+		panel2.add(new Login());
+
+		add("Center", panel2);
+
 		add("North", panel);
 		setVisible(true);
 	}
 
 	public static void main(String[] args) {
-		Layout layout=new Layout();
+		Main layout = new Main();
 	}
+
 }

@@ -5,13 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SignIn extends JPanel implements ActionListener {
+public class Login extends JPanel implements ActionListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton SignInButton;
     private JButton SignUpButton;
 
-    public SignIn() {
+    public Login() {
         // JPanel initialization
         setLayout(new GridLayout(3, 2)); // Set layout for the JPanel
 
@@ -49,7 +49,7 @@ public class SignIn extends JPanel implements ActionListener {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            SignIn form = new SignIn();
+            Login form = new Login();
             // Create a JFrame to hold the SignUp panel
             JFrame frame = new JFrame("User Registration Form");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
