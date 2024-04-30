@@ -1,0 +1,39 @@
+CREATE TABLE LOTTERY_USER (
+    userNo NUMBER(5),      -- 사용자 번호 (PK)
+    userId VARCHAR2(40) NOT NULL,       -- 사용자 ID
+    userPw VARCHAR2(50) NOT NULL,       -- 사용자 비밀번호
+    email VARCHAR2(100) NOT NULL,        -- 이메일 주소
+    createdAt DATE DEFAULT SYSDATE, -- 생성일
+    modifiedAt DATE                 -- 수정일
+);
+
+CREATE TABLE LOTTERY (
+	lotteryNo  NUMBER(5) NOT NULL,
+	userNo	NUMBER(5)	NOT NULL,
+	createdAt	TIMESTAMP	NOT NULL,
+	modifedAt	TIMESTAMP	NULL,
+	category	NUMBER(4)	NOT NULL,
+	lottery1	NUMBER(4)	NOT NULL,
+	lottery2	NUMBER(4)	NOT NULL,
+	lottery3	NUMBER(4)	NOT NULL,
+	lottery4	NUMBER(4)	NOT NULL,
+	lottery5	NUMBER(4)	NOT NULL,
+	lottery6	NUMBER(4)	NOT NULL,
+	status	VARCHAR2(2)	NOT NULL
+);
+
+ALTER TABLE LOTTERY_USER ADD CONSTRAINT PK_USER PRIMARY KEY (
+	userNo
+);
+
+ALTER TABLE Lottery ADD CONSTRAINT PK_LOTTERY PRIMARY KEY (
+	lotteryNo,
+	userNo
+);
+
+ALTER TABLE Lottery ADD CONSTRAINT FK_User_TO_Lottery_1 FOREIGN KEY (
+	userNo
+)
+REFERENCES LOTTERY_USER (
+	userNo
+);
