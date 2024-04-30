@@ -5,6 +5,7 @@ import javax.xml.crypto.Data;
 public class UserVO {
 	
 	public int UserNo;
+	public String userName;
 	public String userId;
 	public String userPw;
 	public String email;
@@ -14,9 +15,11 @@ public class UserVO {
 	public int getUserNo() {
 		return UserNo;
 	}
-	
-	public void setUserNo(int userNo) {
-		UserNo = userNo;
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getUserId() {
 		return userId;
@@ -54,6 +57,10 @@ public class UserVO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public void setUserNo(int userNo) {
+		UserNo = userNo;
+	}
 	
+
 
 }
