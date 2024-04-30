@@ -4,7 +4,7 @@ CREATE TABLE LOTTERY_USER (
     userPw VARCHAR2(50) NOT NULL,       -- 사용자 비밀번호
     email VARCHAR2(100) NOT NULL,        -- 이메일 주소
     createdAt DATE DEFAULT SYSDATE, -- 생성일
-    modifiedAt DATE                 -- 수정일
+    modifiedAt DATE,                 -- 수정일
     status	VARCHAR2(2)	NOT NULL
 );
 
