@@ -9,11 +9,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class MainCategoty extends JFrame {
+public class Categoty extends JFrame {
 	
 	JPanel panel = new JPanel();
 	
-	public MainCategoty() {
+	public Categoty() {
 
 	JLabel label = new JLabel("이미지 넣기");
 	label.setPreferredSize(new Dimension(448, 42));
@@ -25,7 +25,7 @@ public class MainCategoty extends JFrame {
 	myPage.setPreferredSize(new Dimension(113, 42));
 	
 	//로그인 검사
-	JButton logout = new JButton("로그아웃");
+	JButton logout = new JButton("로그인");
 	logout.setPreferredSize(new Dimension(113, 42));
 
 	// BorderLayout은 하나의 영역에 하나의 컴포넌트만 올 수 있다.
