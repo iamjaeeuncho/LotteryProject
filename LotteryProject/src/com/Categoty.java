@@ -3,6 +3,8 @@ package com;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Categoty extends JFrame {
+    JButton login;
+	
 	
 	JPanel panel = new JPanel();
 	
@@ -25,8 +29,8 @@ public class Categoty extends JFrame {
 	myPage.setPreferredSize(new Dimension(113, 42));
 	
 	//로그인 검사
-	JButton logout = new JButton("로그인");
-	logout.setPreferredSize(new Dimension(113, 42));
+    login = new JButton("로그인");
+	login.setPreferredSize(new Dimension(113, 42));
 
 	// BorderLayout은 하나의 영역에 하나의 컴포넌트만 올 수 있다.
 	// 패널에 적용해서 패널을 넣어야 됨
@@ -36,9 +40,9 @@ public class Categoty extends JFrame {
 	panel.add(main);
 	panel.add(myPage);
 	panel.add(chat);
-	panel.add(logout);
-	System.out.println("duddu");
+	panel.add(login);
 
 	setVisible(true);
+	
 	}
 }

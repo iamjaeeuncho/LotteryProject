@@ -1,5 +1,5 @@
 CREATE TABLE LOTTERY_USER (
-    userNo NUMBER(5),      -- 사용자 번호 (PK)
+    userNo NUMBER(5) generated always as identity,      -- 사용자 번호 (PK)
     userId VARCHAR2(40) NOT NULL,       -- 사용자 ID
     userPw VARCHAR2(50) NOT NULL,       -- 사용자 비밀번호
     email VARCHAR2(100) NOT NULL,        -- 이메일 주소
@@ -9,7 +9,7 @@ CREATE TABLE LOTTERY_USER (
 );
 
 CREATE TABLE LOTTERY (
-	lotteryNo  NUMBER(5) NOT NULL,
+	lotteryNo  NUMBER(5)generated always as identity NOT NULL,
 	userNo	NUMBER(5)	NOT NULL,
 	createdAt	TIMESTAMP	NOT NULL,
 	modifedAt	TIMESTAMP	NULL,
@@ -24,7 +24,7 @@ CREATE TABLE LOTTERY (
 );
 
 CREATE TABLE CHAT (
-	ChatNo	NUMBER(5) NOT NULL,
+	ChatNo	NUMBER(5) generated always as identity NOT NULL ,
 	userNo	NUMBER(5) NOT NULL,
 	chatName	VARCHAR2(80) NOT NULL,
 	createdChat	DATE DEFAULT SYSDATE	NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE CHAT (
 );
 
 CREATE TABLE MESSAGE (
-	mesgNo	NUMBER(5)	NOT NULL,
+	mesgNo	NUMBER(5) generated always as identity	NOT NULL,
 	ChatNo	NUMBER(5)	NOT NULL,
 	userNo	NUMBER(5)	NOT NULL,
 	content	VARCHAR2(1000)	NOT NULL,
