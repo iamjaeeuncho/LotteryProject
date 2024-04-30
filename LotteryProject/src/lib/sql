@@ -72,6 +72,7 @@ ALTER TABLE MESSAGE ADD CONSTRAINT PK_MESSAGE PRIMARY KEY (
 -----------------------------------------------------
 COMMENT ON TABLE Lottery IS '복권 테이블';
 COMMENT ON  COLUMN  Lottery.LOTTERYNO  IS  '복권 고유 번호';
+COMMENT ON  COLUMN  Lottery.userNo  IS  '유저 고유번호';
 COMMENT ON  COLUMN  Lottery.createdAt  IS  '복권 생성일자';
 COMMENT ON  COLUMN  Lottery.modifedAt  IS  '복권 수정일자';
 COMMENT ON  COLUMN  Lottery.category  IS  '복권 번호';
