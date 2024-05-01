@@ -4,11 +4,12 @@ package com;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -16,36 +17,54 @@ import javax.swing.JTextField;
 import com.dao.UserDAO;
 
 public class Login extends JPanel implements ActionListener {
-	private JTextField useridField;
-	private JPasswordField passwordField;
+	private JTextField userId;
+	private JTextField passwd;
 	private JButton SignInButton;
 	private JButton SignUpButton;
 	private JTextField name;
 	private JTextField email;
-	private JTextField passwd;
-	private JTextField userId;
 	
+	UserDAO udao=new UserDAO();
 	public Login() {
 		// JPanel initialization
 		setLayout(new GridLayout(3, 2)); // Set layout for the JPanel
 
 		JLabel useridLabel = new JLabel("아이디:");
-		useridField = new JTextField();
+		userId = new JTextField();
 		add(useridLabel);
-		add(useridField);
+		add(userId);
 
 		JLabel passwordLabel = new JLabel("비밀번호:");
-		passwordField = new JPasswordField();
+		passwd = new JPasswordField();
 		add(passwordLabel);
-		add(passwordField);
+		add(passwd);
 
 		SignInButton = new JButton("로그인");
-		SignInButton.addActionListener(this);
+		SignInButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String userid=userId.getText(); //여기가 에러야
+				String password=passwd.getText();
+				Object obj= udao.signIn(userid, password);
+				int userNo = ((BigDecimal)obj).intValue();
+				System.out.println(userNo);
+				if(userNo>0) {
+					System.out.println("로그인 성공");
+				}else{
+					JOptionPane.showMessageDialog(null,"아이디와 비밀번호를 확인하세요");
+					//null인 경우 다이얼로그가 화면 중앙에 표시
+				}
+			}
+			
+		});
 		add(SignInButton);
 
 		SignUpButton = new JButton("회원가입");
 		SignUpButton.addActionListener(this);
 		add(SignUpButton);
+		
+		
 	}
 
 	@Override
@@ -87,13 +106,17 @@ public class Login extends JPanel implements ActionListener {
     			public void actionPerformed(ActionEvent e) {
     				System.out.println("회원 가입 버튼 클릭");
     				revalidate(); // 변경된 내용을 다시 그리도록 갱신
-    				UserDAO udao=new UserDAO();
     				String name1=name.getText();
     				String name2=userId.getText();
     				String name3=email.getText();
     				String name4=passwd.getText();
-    				String a=udao.singUp(name1,name2,name3,name4);
-    				System.out.println(a);
+    				String mesg=udao.signUp(name1,name2,name3,name4);				
+    				if(mesg.equals("회원가입이 완료되었습니다.")) {
+    					JOptionPane.showMessageDialog(null,mesg);
+    					frame.dispose();
+    				}else {
+    					JOptionPane.showMessageDialog(null,mesg);
+    				}
     			}
     		});//event
         }

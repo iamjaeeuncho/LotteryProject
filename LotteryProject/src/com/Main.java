@@ -33,9 +33,7 @@ public class Main extends JFrame {
 				System.out.println("로그인 버튼 클릭");
 				add("Center", panel);
 				revalidate(); // 변경된 내용을 다시 그리도록 갱신
-				
 			}
-			
 		});
 		
 		setVisible(true);

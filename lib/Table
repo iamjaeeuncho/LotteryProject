@@ -1,0 +1,114 @@
+CREATE TABLE LOTTERY_USER (
+    userNo NUMBER(5) generated always as identity,      -- 사용자 번호 (PK)
+    userId VARCHAR2(40) NOT NULL,       -- 사용자 ID
+    userName VARCHAR2(40) NOT NULL,
+    userPw VARCHAR2(50) NOT NULL,       -- 사용자 비밀번호
+    email VARCHAR2(100) NOT NULL,        -- 이메일 주소
+    createdAt DATE DEFAULT SYSDATE, -- 생성일
+    modifiedAt DATE,                 -- 수정일
+    status	VARCHAR2(2)	NOT NULL
+);
+
+CREATE TABLE LOTTERY (
+	lotteryNo  NUMBER(5)generated always as identity NOT NULL,
+	userNo	NUMBER(5)	NOT NULL,
+	createdAt	TIMESTAMP	NOT NULL,
+	modifedAt	TIMESTAMP	NULL,
+	category	NUMBER(4)	NOT NULL,
+	lottery1	NUMBER(4)	NOT NULL,
+	lottery2	NUMBER(4)	NOT NULL,
+	lottery3	NUMBER(4)	NOT NULL,
+	lottery4	NUMBER(4)	NOT NULL,
+	lottery5	NUMBER(4)	NOT NULL,
+	lottery6	NUMBER(4)	NOT NULL,
+	status	VARCHAR2(2)	NOT NULL
+);
+
+CREATE TABLE CHAT (
+	ChatNo	NUMBER(5) generated always as identity NOT NULL ,
+	userNo	NUMBER(5) NOT NULL,
+	chatName	VARCHAR2(80) NOT NULL,
+	createdChat	DATE DEFAULT SYSDATE	NOT NULL,
+	updateChat	DATE DEFAULT SYSDATE	NULL,
+	lastChatMesg NUMBER(5)NULL,	
+	status	VARCHAR2(4)	NOT NULL
+);
+
+CREATE TABLE MESSAGE (
+	mesgNo	NUMBER(5) generated always as identity	NOT NULL,
+	ChatNo	NUMBER(5)	NOT NULL,
+	userNo	NUMBER(5)	NOT NULL,
+	content	VARCHAR2(1000)	NOT NULL,
+	createdMesg	DATE DEFAULT SYSDATE	NOT NULL,
+	updateMesg	DATE DEFAULT SYSDATE	NULL,
+	status	VARCHAR2(4)	NULL
+);
+
+
+ALTER TABLE LOTTERY_USER ADD CONSTRAINT PK_USER PRIMARY KEY (
+	userNo
+);
+
+ALTER TABLE Lottery ADD CONSTRAINT PK_LOTTERY PRIMARY KEY (
+	lotteryNo,
+	userNo
+);
+
+ALTER TABLE Lottery ADD CONSTRAINT FK_User_TO_Lottery_1 FOREIGN KEY (
+	userNo
+)
+REFERENCES LOTTERY_USER (
+	userNo
+);
+
+ALTER TABLE CHAT ADD CONSTRAINT PK_CHAT PRIMARY KEY (
+	ChatNo
+);
+
+ALTER TABLE MESSAGE ADD CONSTRAINT PK_MESSAGE PRIMARY KEY (
+	mesgNo
+);
+
+
+-----------------------------------------------------
+COMMENT ON TABLE Lottery IS '복권 테이블';
+COMMENT ON  COLUMN  Lottery.LOTTERYNO  IS  '복권 고유 번호';
+COMMENT ON  COLUMN  Lottery.userNo  IS  '유저 고유번호';
+COMMENT ON  COLUMN  Lottery.createdAt  IS  '복권 생성일자';
+COMMENT ON  COLUMN  Lottery.modifedAt  IS  '복권 수정일자';
+COMMENT ON  COLUMN  Lottery.category  IS  '복권 번호';
+COMMENT ON  COLUMN  Lottery.lottery1  IS  '복권 번호2';
+COMMENT ON  COLUMN  Lottery.lottery2  IS  '복권 번호3';
+COMMENT ON  COLUMN  Lottery.lottery3  IS  '복권 번호3';
+COMMENT ON  COLUMN  Lottery.lottery4  IS  '복권 번호4';
+COMMENT ON  COLUMN  Lottery.lottery5  IS  '복권 번호5';
+COMMENT ON  COLUMN  Lottery.lottery6  IS  '복권 번호6';
+COMMENT ON COLUMN Lottery.status IS '복권 유효상태';
+
+
+COMMENT ON TABLE Lottery_USER IS '사용자 테이블';
+COMMENT ON  COLUMN  LOTTERY_USER.userNo  IS  '유저 고유 번호';
+COMMENT ON  COLUMN  LOTTERY_USER.userId  IS  '유저 아이디';
+COMMENT ON  COLUMN  LOTTERY_USER.userPw  IS  '유저 비밀번호';
+COMMENT ON  COLUMN  LOTTERY_USER.email  IS  '이메일';
+COMMENT ON  COLUMN  LOTTERY_USER.createdAt  IS  '유저 생성일';
+COMMENT ON  COLUMN  LOTTERY_USER.createdAt  IS  '유저 삭제일';
+COMMENT ON  COLUMN  LOTTERY_USER.status  IS  '유저 상태';
+
+COMMENT ON TABLE MESSAGE IS '메세지 테이블';
+COMMENT ON  COLUMN  MESSAGE.mesgNo  IS  '메세지 고유번호';
+COMMENT ON  COLUMN  MESSAGE.ChatNo  IS  '채팅방 고유번호';
+COMMENT ON  COLUMN  MESSAGE.userNo  IS  '유저 고유번호';
+COMMENT ON  COLUMN  MESSAGE.content  IS  '메세지 내용';
+COMMENT ON  COLUMN  MESSAGE.createdMesg  IS  '메세지 생성일';
+COMMENT ON  COLUMN  MESSAGE.updateMesg  IS  '메세지 수정일';
+COMMENT ON  COLUMN  MESSAGE.status  IS  '메세지 삭제여부';
+
+COMMENT ON TABLE CHAT IS '채팅 테이블';
+COMMENT ON  COLUMN  CHAT.ChatNo  IS  '채팅방 고유번호';
+COMMENT ON  COLUMN  CHAT.userNo  IS  '유저 고유번호';
+COMMENT ON  COLUMN  CHAT.chatName  IS  '채팅방 이름';
+COMMENT ON  COLUMN  CHAT.createdChat  IS  '채팅방 생성일';
+COMMENT ON  COLUMN  CHAT.updateChat  IS  '채팅방 수정일';
+COMMENT ON  COLUMN  CHAT.lastChatMesg  IS  '사용자가 읽은 마지막 메시지의 id 값';
+COMMENT ON  COLUMN  CHAT.status  IS  '채팅방 삭제여부';
