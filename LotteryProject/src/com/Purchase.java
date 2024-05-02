@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Purchase extends JFrame {
     private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
@@ -29,9 +28,9 @@ public class Purchase extends JFrame {
         setTitle("Purchase");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
-        setSize(800, 600);
+        setSize(1100, 600);
         setVisible(true);
-        
+
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
@@ -47,7 +46,7 @@ public class Purchase extends JFrame {
             categoryPanels[i] = new JPanel();
             categoryPanels[i].setBackground(Color.WHITE);
             categoryPanels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            
+
             JLabel categoryLabel = new JLabel(getCategoryName(i));
             categoryPanels[i].add(categoryLabel);
 
@@ -69,7 +68,7 @@ public class Purchase extends JFrame {
 
         JPanel numberPanel = new JPanel(new GridLayout(ROWS, COLS));
         numberPanel.setPreferredSize(new Dimension(400, 400));
-        
+
         int value = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
@@ -102,7 +101,7 @@ public class Purchase extends JFrame {
         confirmPanel.setOpaque(true);
         confirmPanel.setBackground(Color.WHITE); // 배경색 변경
         confirmPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
+
         JLabel confirmLabel = new JLabel("선택하기", SwingConstants.CENTER);
         confirmLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -122,28 +121,29 @@ public class Purchase extends JFrame {
         // ----------------- OUTPUT -----------------
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridLayout(1, 1));
-        JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);        
-        menuPanel.setPreferredSize(new Dimension(400, 50));
+        JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);
+        menuPanel.setPreferredSize(new Dimension(700, 50));
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         menuPanel.add(menuLabel);
- 
+
         // 2. 결과 출력
-        JPanel resultPanel = new JPanel(new GridLayout(5, 4));
-        resultPanel.setPreferredSize(new Dimension(400, 400));
-        resultLabels = new JLabel[5][4];
+        JPanel resultPanel = new JPanel(new GridLayout(5, 3));
+        resultPanel.setPreferredSize(new Dimension(700, 400));
+        resultLabels = new JLabel[5][3];
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 4; j++) {
+            for (int j = 0; j < 3; j++) {
                 resultLabels[i][j] = new JLabel("  ", SwingConstants.CENTER);
                 resultLabels[i][j].setBackground(Color.WHITE);
                 resultLabels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                resultLabels[i][j].setOpaque(true);
                 resultPanel.add(resultLabels[i][j]);
             }
         }
-        
+
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        registerPanel.setPreferredSize(new Dimension(400, 50));
+        registerPanel.setPreferredSize(new Dimension(700, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
         registerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -156,10 +156,10 @@ public class Purchase extends JFrame {
             }
         });
         registerPanel.add(registerLabel);
-        
+
         // 오른쪽 사이드
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setPreferredSize(new Dimension(400, 500));
+        outputPanel.setPreferredSize(new Dimension(700, 500));
         outputPanel.add(menuPanel, BorderLayout.NORTH);
         outputPanel.add(resultPanel, BorderLayout.CENTER);
         outputPanel.add(registerPanel, BorderLayout.SOUTH);
@@ -186,7 +186,7 @@ public class Purchase extends JFrame {
             selectedIndex = index;
         }
     }
-    
+
     // 숫자 선택 효과
     private void toggleNumber(int row, int col) {
         // If already selected 6 numbers, return
@@ -196,7 +196,7 @@ public class Purchase extends JFrame {
 
         numberCellStates[row][col] = !numberCellStates[row][col];
         Color bg = numberCellStates[row][col] ? Color.BLACK : Color.WHITE;
-        Color fg = numberCellStates[row][col] ? Color.WHITE : Color.BLACK;
+        Color fg = numberCellStates[row][col] ? Color.RED : Color.BLACK;
         numberPanels[row][col].setBackground(bg);
         numberPanels[row][col].setForeground(fg);
 
@@ -210,19 +210,19 @@ public class Purchase extends JFrame {
             selectedNumbers.remove(Integer.valueOf(value));
         }
     }
-    
+
     // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
-    	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
-            System.out.println("Please select exactly " + ARRAY_SIZE + " numbers and a category.");
+        if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
             return;
         }
 
-    	if (clickCnt > 4) {
-    		JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최대 5개까지만 선택 가능합니다");
-    		return;
-    	}
-    	
+        if (clickCnt > 4) {
+            JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최대 5개까지만 선택 가능합니다");
+            return;
+        }
+
         // Create a map to store selected category and numbers
         Map<String, Object> selectionMap = new HashMap<>();
         if (selectedIndex != -1) {
@@ -240,6 +240,32 @@ public class Purchase extends JFrame {
             }
         }
         clickCnt++;
+
+        // 초기화
+        resetSelection();
+    }
+
+    // 선택 초기화
+    private void resetSelection() {
+        // 카테고리 초기화
+        if (selectedIndex != -1) {
+            categoryPanels[selectedIndex].setBackground(Color.WHITE);
+            categoryPanels[selectedIndex].setForeground(Color.BLACK);
+            categoryCellStates[selectedIndex] = false;
+            selectedIndex = -1;
+        }
+
+        // 숫자 초기화
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                numberCellStates[i][j] = false;
+                numberPanels[i][j].setBackground(Color.WHITE);
+                numberPanels[i][j].setForeground(Color.BLACK);
+            }
+        }
+
+        // 선택된 숫자 리스트 초기화
+        selectedNumbers.clear();
     }
 
     private String getCategoryName(int index) {
