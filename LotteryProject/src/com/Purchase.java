@@ -10,7 +10,6 @@ import java.util.Map;
 public class Purchase extends JFrame {
     private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
-    private final int PANELS_COUNT = 3;
     private int selectedIndex = -1;
 
     private JPanel[][] numberPanels;
@@ -28,21 +27,21 @@ public class Purchase extends JFrame {
         setTitle("Purchase");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
-        setSize(1100, 600);
+        setSize(1000, 500);
         setVisible(true);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
         // 1. 카테고리: 자동, 반자동, 수동
-        categoryPanels = new JPanel[PANELS_COUNT];
-        categoryCellStates = new boolean[PANELS_COUNT];
+        categoryPanels = new JPanel[3];
+        categoryCellStates = new boolean[3];
 
-        JPanel categoryPanel = new JPanel(new GridLayout(1, PANELS_COUNT));
+        JPanel categoryPanel = new JPanel(new GridLayout(1, 3));
         categoryPanel.setPreferredSize(new Dimension(400, 50));
         add(categoryPanel);
 
-        for (int i = 0; i < PANELS_COUNT; i++) {
+        for (int i = 0; i < 3; i++) {
             categoryPanels[i] = new JPanel();
             categoryPanels[i].setBackground(Color.WHITE);
             categoryPanels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -67,7 +66,7 @@ public class Purchase extends JFrame {
         selectedNumbers = new ArrayList<>();
 
         JPanel numberPanel = new JPanel(new GridLayout(ROWS, COLS));
-        numberPanel.setPreferredSize(new Dimension(400, 400));
+        numberPanel.setPreferredSize(new Dimension(400, 300));
 
         int value = 1;
         for (int i = 0; i < ROWS; i++) {
@@ -99,7 +98,7 @@ public class Purchase extends JFrame {
         JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         confirmPanel.setPreferredSize(new Dimension(400, 50));
         confirmPanel.setOpaque(true);
-        confirmPanel.setBackground(Color.WHITE); // 배경색 변경
+        confirmPanel.setBackground(Color.WHITE);
         confirmPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         JLabel confirmLabel = new JLabel("선택하기", SwingConstants.CENTER);
@@ -113,7 +112,7 @@ public class Purchase extends JFrame {
 
         // 왼쪽 사이드
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setPreferredSize(new Dimension(400, 500));
+        inputPanel.setPreferredSize(new Dimension(400, 400));
         inputPanel.add(categoryPanel, BorderLayout.NORTH);
         inputPanel.add(numberPanel, BorderLayout.CENTER);
         inputPanel.add(confirmPanel, BorderLayout.SOUTH);
@@ -122,14 +121,14 @@ public class Purchase extends JFrame {
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridLayout(1, 1));
         JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(700, 50));
+        menuPanel.setPreferredSize(new Dimension(600, 50));
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         menuPanel.add(menuLabel);
 
         // 2. 결과 출력
         JPanel resultPanel = new JPanel(new GridLayout(5, 3));
-        resultPanel.setPreferredSize(new Dimension(700, 400));
+        resultPanel.setPreferredSize(new Dimension(600, 300));
         resultLabels = new JLabel[5][3];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
@@ -143,7 +142,7 @@ public class Purchase extends JFrame {
 
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        registerPanel.setPreferredSize(new Dimension(700, 50));
+        registerPanel.setPreferredSize(new Dimension(600, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
         registerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -159,7 +158,7 @@ public class Purchase extends JFrame {
 
         // 오른쪽 사이드
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setPreferredSize(new Dimension(700, 500));
+        outputPanel.setPreferredSize(new Dimension(600, 400));
         outputPanel.add(menuPanel, BorderLayout.NORTH);
         outputPanel.add(resultPanel, BorderLayout.CENTER);
         outputPanel.add(registerPanel, BorderLayout.SOUTH);
@@ -169,6 +168,7 @@ public class Purchase extends JFrame {
         mainPanel.add(outputPanel, BorderLayout.CENTER);
     }
 
+    // ----------------- Methods -----------------
     // 카테고리 선택 효과
     private void toggleCategory(int index) {
         if (selectedIndex != -1) {
@@ -180,6 +180,7 @@ public class Purchase extends JFrame {
         if (selectedIndex == index) {
             selectedIndex = -1;
         } else {
+            resetNumberPanels(); // 다른 카테고리가 선택된 경우 숫자 패널 초기화
             categoryPanels[index].setBackground(Color.BLACK);
             categoryPanels[index].setForeground(Color.WHITE);
             categoryCellStates[index] = true;
@@ -194,6 +195,11 @@ public class Purchase extends JFrame {
             return;
         }
 
+        if (selectedIndex == 0) { // "자동" 카테고리가 선택된 경우
+            JOptionPane.showMessageDialog(null, "자동 카테고리에서는 숫자를 선택할 수 없습니다.");
+            return;
+        }
+        
         numberCellStates[row][col] = !numberCellStates[row][col];
         Color bg = numberCellStates[row][col] ? Color.BLACK : Color.WHITE;
         Color fg = numberCellStates[row][col] ? Color.RED : Color.BLACK;
@@ -208,6 +214,39 @@ public class Purchase extends JFrame {
             }
         } else {
             selectedNumbers.remove(Integer.valueOf(value));
+        }
+    }
+
+    // 선택 초기화
+    private void resetSelection() {
+        if (selectedIndex != -1) {
+            categoryPanels[selectedIndex].setBackground(Color.WHITE);
+            categoryPanels[selectedIndex].setForeground(Color.BLACK);
+            categoryCellStates[selectedIndex] = false;
+            selectedIndex = -1;
+        }
+
+        // 숫자 초기화
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                numberCellStates[i][j] = false;
+                numberPanels[i][j].setBackground(Color.WHITE);
+                numberPanels[i][j].setForeground(Color.BLACK);
+            }
+        }
+
+        // 선택된 숫자 리스트 초기화
+        selectedNumbers.clear();
+    }
+
+    private void resetNumberPanels() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                numberCellStates[i][j] = false;
+                numberPanels[i][j].setBackground(Color.WHITE);
+                numberPanels[i][j].setForeground(Color.BLACK);
+                numberPanels[i][j].setEnabled(true); // 선택 가능하도록 설정
+            }
         }
     }
 
@@ -243,29 +282,6 @@ public class Purchase extends JFrame {
 
         // 초기화
         resetSelection();
-    }
-
-    // 선택 초기화
-    private void resetSelection() {
-        // 카테고리 초기화
-        if (selectedIndex != -1) {
-            categoryPanels[selectedIndex].setBackground(Color.WHITE);
-            categoryPanels[selectedIndex].setForeground(Color.BLACK);
-            categoryCellStates[selectedIndex] = false;
-            selectedIndex = -1;
-        }
-
-        // 숫자 초기화
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                numberCellStates[i][j] = false;
-                numberPanels[i][j].setBackground(Color.WHITE);
-                numberPanels[i][j].setForeground(Color.BLACK);
-            }
-        }
-
-        // 선택된 숫자 리스트 초기화
-        selectedNumbers.clear();
     }
 
     private String getCategoryName(int index) {
