@@ -1,11 +1,26 @@
 package com;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class Purchase extends JFrame {
     private JPanel[] categoryPanels;
@@ -69,29 +84,31 @@ public class Purchase extends JFrame {
         numberPanel.setPreferredSize(new Dimension(400, 300));
 
         int value = 1;
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                numberPanels[i][j] = new JPanel();
-                numberPanels[i][j].setBackground(Color.WHITE);
-                numberPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-                numberCellValues[i][j] = value++;
-
-                JLabel label = new JLabel(String.valueOf(numberCellValues[i][j]));
-                numberPanels[i][j].add(label);
-
-                final int row = i;
-                final int col = j;
-
-                numberPanels[i][j].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        toggleNumber(row, col);
-                    }
-                });
-
-                numberPanel.add(numberPanels[i][j]);
-            }
+        if (value < 46) {
+        	for (int i = 0; i < ROWS; i++) {
+        		for (int j = 0; j < COLS; j++) {
+        			numberPanels[i][j] = new JPanel();
+        			numberPanels[i][j].setBackground(Color.WHITE);
+        			numberPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        			
+        			numberCellValues[i][j] = value++;
+        			
+        			JLabel label = new JLabel(String.valueOf(numberCellValues[i][j]));
+        			numberPanels[i][j].add(label);
+        			
+        			final int row = i;
+        			final int col = j;
+        			
+        			numberPanels[i][j].addMouseListener(new MouseAdapter() {
+        				@Override
+        				public void mouseClicked(MouseEvent e) {
+        					toggleNumber(row, col);
+        				}
+        			});
+        			
+        			numberPanel.add(numberPanels[i][j]);
+        		}        	
+        	}
         }
 
         // 3. 복권 번호 선택하기
@@ -252,38 +269,57 @@ public class Purchase extends JFrame {
 
     // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
-        if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
-            JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
-            return;
-        }
-
-        if (clickCnt > 4) {
-            JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최대 5개까지만 선택 가능합니다");
-            return;
-        }
-
-        // Create a map to store selected category and numbers
-        Map<String, Object> selectionMap = new HashMap<>();
-        if (selectedIndex != -1) {
-            String selectedCategory = getCategoryName(selectedIndex);
-            selectionMap.put("category", selectedCategory);
-        }
-
-        selectionMap.put("numbers", selectedNumbers);
-
-        for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
-            if (entry.getKey().equals("category")) {
-                resultLabels[clickCnt][0].setText(entry.getValue().toString());
-            } else if (entry.getKey().equals("numbers")) {
-                resultLabels[clickCnt][1].setText(entry.getValue().toString());
+    	// 자동카테고리
+    	if (selectedIndex == 0) {
+            // 1부터 45까지의 숫자가 담긴 리스트 생성
+        	ArrayList<Integer> numbers = new ArrayList<>();
+            for (int i = 1; i <= 45; i++) {
+                numbers.add(i);
             }
+            
+            // 무작위로 6개의 숫자 선택
+            Random random = new Random();
+            for (int i = 0; i < 6; i++) {
+                int index = random.nextInt(numbers.size());
+                selectedNumbers.add(numbers.get(index));
+                numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+            }
+            
+        } else {
+        	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
+        		JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
+        		return;
+        	}
+        	
+        	if (clickCnt > 4) {
+        		JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최대 5개까지만 선택 가능합니다");
+        		return;
+        	}
+        	
         }
+    	// Create a map to store selected category and numbers
+    	Map<String, Object> selectionMap = new HashMap<>();
+    	if (selectedIndex != -1) {
+    		String selectedCategory = getCategoryName(selectedIndex);
+    		selectionMap.put("category", selectedCategory);
+    	}
+    	
+    	selectionMap.put("numbers", selectedNumbers);
+    	
+    	for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
+    		if (entry.getKey().equals("category")) {
+    			resultLabels[clickCnt][0].setText(entry.getValue().toString());
+    		} else if (entry.getKey().equals("numbers")) {
+    			resultLabels[clickCnt][1].setText(entry.getValue().toString());
+    		}
+    	}
+
         clickCnt++;
 
         // 초기화
         resetSelection();
     }
-
+    
     private String getCategoryName(int index) {
         if (index == 0) {
             return "자동";
