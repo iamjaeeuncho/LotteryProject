@@ -16,9 +16,10 @@ import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -150,12 +151,24 @@ public class Purchase extends JFrame {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
                 resultLabels[i][j] = new JLabel("  ", SwingConstants.CENTER);
+                resultLabels[i][j].setOpaque(true);
                 resultLabels[i][j].setBackground(Color.WHITE);
                 resultLabels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                resultLabels[i][j].setOpaque(true);
+                if (j == 2) {
+                	JPanel buttonPanel = new JPanel();
+                    JButton modifyButton = new JButton("수정");
+                    JButton deleteButton = new JButton("삭제");
+                    buttonPanel.add(modifyButton);
+                    buttonPanel.add(deleteButton);
+                    resultLabels[i][j].setLayout(new BorderLayout());
+                    buttonPanel.setBackground(Color.WHITE);
+                    resultLabels[i][j].add(buttonPanel, BorderLayout.CENTER);
+                }
                 resultPanel.add(resultLabels[i][j]);
             }
         }
+
+
 
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -287,13 +300,20 @@ public class Purchase extends JFrame {
         // 반자동 카테고리
     	} else if (selectedIndex == 1){
     		int selectedlength = selectedNumbers.size();
-    		// 무작위로 6개의 숫자 선택
-            Random random = new Random();
-            for (int i = 0; i < 6 - selectedlength; i++) {
-                int index = random.nextInt(numbers.size());
-                selectedNumbers.add(numbers.get(index));
-                numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
-            }
+    		
+    		if (selectedlength > 5) {
+    			JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
+        		return;
+    		} else {
+    			// 나머지 숫자 자동 선택
+                Random random = new Random();
+                for (int i = 0; i < 6 - selectedlength; i++) {
+                    int index = random.nextInt(numbers.size());
+                    selectedNumbers.add(numbers.get(index));
+                    numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+                }
+    		}
+    		
     	// 수동 카테고리
         } else {
         	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
@@ -302,7 +322,7 @@ public class Purchase extends JFrame {
         	}
         	
         	if (clickCnt > 4) {
-        		JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최대 5개까지만 선택 가능합니다");
+        		JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
         		return;
         	}
         	
@@ -324,6 +344,7 @@ public class Purchase extends JFrame {
     		}
     	}
 
+    	
         clickCnt++;
 
         // 초기화
