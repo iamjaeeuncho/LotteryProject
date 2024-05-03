@@ -168,9 +168,9 @@ public class Purchase extends JFrame {
                 	int rowIndex = i;
                 	
                 	// 수정 버튼
-                	JLabel modifyJLabel = new JLabel("수정", SwingConstants.CENTER);
-                	modifyJLabel.setPreferredSize(new Dimension(60, 30));
-                	modifyJLabel.addMouseListener(new MouseAdapter() {
+                	JLabel modifyLabel = new JLabel("수정", SwingConstants.CENTER);
+                	modifyLabel.setPreferredSize(new Dimension(60, 30));
+                	modifyLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             modifyLottery(rowIndex);
@@ -178,17 +178,17 @@ public class Purchase extends JFrame {
                     });
                 	
                 	// 삭제 버튼
-                	JLabel deleteJLabel = new JLabel("삭제", SwingConstants.CENTER);
-                	deleteJLabel.setPreferredSize(new Dimension(60, 30));
-                	modifyJLabel.addMouseListener(new MouseAdapter() {
+                	JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
+                	deleteLabel.setPreferredSize(new Dimension(60, 30));
+                	deleteLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             deleteLottery(rowIndex);
                         }
                     });
                 	
-                    buttonPanel.add(modifyJLabel);
-                    buttonPanel.add(deleteJLabel);
+                    buttonPanel.add(modifyLabel);
+                    buttonPanel.add(deleteLabel);
                     
                     resultLabels[i][j].setLayout(new BorderLayout());
                     resultLabels[i][j].add(buttonPanel, BorderLayout.CENTER);
