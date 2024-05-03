@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.List;
 import java.awt.event.MouseAdapter;
@@ -58,7 +59,7 @@ public class Purchase extends JFrame {
         add(categoryPanel);
 
         for (int i = 0; i < 3; i++) {
-            categoryPanels[i] = new JPanel();
+            categoryPanels[i] = new JPanel(new GridBagLayout());
             categoryPanels[i].setBackground(Color.WHITE);
             categoryPanels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -85,35 +86,40 @@ public class Purchase extends JFrame {
         numberPanel.setPreferredSize(new Dimension(400, 300));
 
         int value = 1;
-        if (value < 46) {
-        	for (int i = 0; i < ROWS; i++) {
-        		for (int j = 0; j < COLS; j++) {
-        			numberPanels[i][j] = new JPanel();
-        			numberPanels[i][j].setBackground(Color.WHITE);
-        			numberPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        			
-        			numberCellValues[i][j] = value++;
-        			
-        			JLabel label = new JLabel(String.valueOf(numberCellValues[i][j]));
-        			numberPanels[i][j].add(label);
-        			
-        			final int row = i;
-        			final int col = j;
-        			
-        			numberPanels[i][j].addMouseListener(new MouseAdapter() {
-        				@Override
-        				public void mouseClicked(MouseEvent e) {
-        					toggleNumber(row, col);
-        				}
-        			});
-        			
-        			numberPanel.add(numberPanels[i][j]);
-        		}        	
-        	}
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                numberPanels[i][j] = new JPanel(new GridBagLayout());
+                numberPanels[i][j].setBackground(Color.WHITE);
+                numberPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                
+                if (value <= 45) {
+                    numberCellValues[i][j] = value;
+                    JLabel label = new JLabel(String.valueOf(numberCellValues[i][j]));
+                    numberPanels[i][j].add(label);
+                    
+                    final int row = i;
+                    final int col = j;
+                    
+                    numberPanels[i][j].addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            toggleNumber(row, col);
+                        }
+                    });
+                }
+                else {
+                    JLabel emptyLabel = new JLabel("");
+                    numberPanels[i][j].add(emptyLabel);
+                    numberPanels[i][j].setEnabled(false);
+                }
+                
+                numberPanel.add(numberPanels[i][j]);
+                value++;
+            }
         }
 
         // 3. 복권 번호 선택하기
-        JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel confirmPanel = new JPanel(new GridBagLayout());
         confirmPanel.setPreferredSize(new Dimension(400, 50));
         confirmPanel.setOpaque(true);
         confirmPanel.setBackground(Color.WHITE);
@@ -155,23 +161,37 @@ public class Purchase extends JFrame {
                 resultLabels[i][j].setBackground(Color.WHITE);
                 resultLabels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 if (j == 2) {
-                	JPanel buttonPanel = new JPanel();
-                    JButton modifyButton = new JButton("수정");
-                    JButton deleteButton = new JButton("삭제");
-                    buttonPanel.add(modifyButton);
-                    buttonPanel.add(deleteButton);
+                	JPanel buttonPanel = new JPanel(new GridBagLayout());
+                	
+                	int rowIndex = i;
+                	
+                	// 수정 버튼
+                	JLabel modifyJLabel = new JLabel("수정", SwingConstants.CENTER);
+                	modifyJLabel.setPreferredSize(new Dimension(60, 30));
+                	modifyJLabel.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            modifyLottery(rowIndex);
+                        }
+                    });
+                	
+                	// 삭제 버튼
+                	JLabel deleteJLabel = new JLabel("삭제", SwingConstants.CENTER);
+                	deleteJLabel.setPreferredSize(new Dimension(60, 30));
+                	
+                    buttonPanel.add(modifyJLabel);
+                    buttonPanel.add(deleteJLabel);
+                    
                     resultLabels[i][j].setLayout(new BorderLayout());
-                    buttonPanel.setBackground(Color.WHITE);
                     resultLabels[i][j].add(buttonPanel, BorderLayout.CENTER);
+                    buttonPanel.setBackground(Color.WHITE);
                 }
                 resultPanel.add(resultLabels[i][j]);
             }
         }
 
-
-
         // 3. 저장하기
-        JPanel registerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel registerPanel = new JPanel(new GridBagLayout());
         registerPanel.setPreferredSize(new Dimension(600, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
@@ -210,7 +230,7 @@ public class Purchase extends JFrame {
         if (selectedIndex == index) {
             selectedIndex = -1;
         } else {
-            resetNumberPanels(); // 다른 카테고리가 선택된 경우 숫자 패널 초기화
+            resetNumbers(); // 다른 카테고리가 선택된 경우 숫자 패널 초기화
             categoryPanels[index].setBackground(Color.BLACK);
             categoryPanels[index].setForeground(Color.WHITE);
             categoryCellStates[index] = true;
@@ -220,12 +240,13 @@ public class Purchase extends JFrame {
 
     // 숫자 선택 효과
     private void toggleNumber(int row, int col) {
-        // If already selected 6 numbers, return
+        // 6개 이상 선택할 때
         if (selectedNumbers.size() >= ARRAY_SIZE && !numberCellStates[row][col]) {
             return;
         }
-
-        if (selectedIndex == 0) { // "자동" 카테고리가 선택된 경우
+        
+     // 자동 카테고리가 선택된 경우
+        if (selectedIndex == 0) { 
             JOptionPane.showMessageDialog(null, "자동 카테고리에서는 숫자를 선택할 수 없습니다.");
             return;
         }
@@ -236,7 +257,7 @@ public class Purchase extends JFrame {
         numberPanels[row][col].setBackground(bg);
         numberPanels[row][col].setForeground(fg);
 
-        // Update selectedNumbers list
+        // 선택 숫자 업데이트
         int value = numberCellValues[row][col];
         if (numberCellStates[row][col]) {
             if (!selectedNumbers.contains(value)) {
@@ -248,7 +269,7 @@ public class Purchase extends JFrame {
     }
 
     // 선택 초기화
-    private void resetSelection() {
+    private void resetCategory() {
         if (selectedIndex != -1) {
             categoryPanels[selectedIndex].setBackground(Color.WHITE);
             categoryPanels[selectedIndex].setForeground(Color.BLACK);
@@ -256,20 +277,11 @@ public class Purchase extends JFrame {
             selectedIndex = -1;
         }
 
-        // 숫자 초기화
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                numberCellStates[i][j] = false;
-                numberPanels[i][j].setBackground(Color.WHITE);
-                numberPanels[i][j].setForeground(Color.BLACK);
-            }
-        }
-
-        // 선택된 숫자 리스트 초기화
-        selectedNumbers.clear();
+        selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
-
-    private void resetNumberPanels() {
+    
+    // 숫자 초기화
+    private void resetNumbers() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 numberCellStates[i][j] = false;
@@ -278,6 +290,8 @@ public class Purchase extends JFrame {
                 numberPanels[i][j].setEnabled(true); // 선택 가능하도록 설정
             }
         }
+        
+        selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
 
     // 선택된 카테고리와 숫자 출력
@@ -288,24 +302,26 @@ public class Purchase extends JFrame {
     		numbers.add(i);
     	}
     	
-    	// 자동 카테고리
+    	// 자동 카테고리: 무작위로 6개의 숫자 선택
     	if (selectedIndex == 0) {
-            // 무작위로 6개의 숫자 선택
+            // 
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
                 int index = random.nextInt(numbers.size());
                 selectedNumbers.add(numbers.get(index));
                 numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
-        // 반자동 카테고리
+        // 반자동 카테고리: 나머지 숫자 자동 선택
     	} else if (selectedIndex == 1){
     		int selectedlength = selectedNumbers.size();
     		
-    		if (selectedlength > 5) {
-    			JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
+    		if (selectedlength == 0) {
+    			JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
+        		return;
+    		} else if (selectedlength > 5) {
+        		JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
         		return;
     		} else {
-    			// 나머지 숫자 자동 선택
                 Random random = new Random();
                 for (int i = 0; i < 6 - selectedlength; i++) {
                     int index = random.nextInt(numbers.size());
@@ -327,7 +343,7 @@ public class Purchase extends JFrame {
         	}
         	
         }
-    	// Create a map to store selected category and numbers
+    	// 카테고리와 숫자를 맵형식으로 저장
     	Map<String, Object> selectionMap = new HashMap<>();
     	if (selectedIndex != -1) {
     		String selectedCategory = getCategoryName(selectedIndex);
@@ -343,12 +359,11 @@ public class Purchase extends JFrame {
     			resultLabels[clickCnt][1].setText(entry.getValue().toString());
     		}
     	}
-
     	
         clickCnt++;
 
-        // 초기화
-        resetSelection();
+        resetCategory(); // 초기화
+        resetNumbers();
     }
     
     private String getCategoryName(int index) {
@@ -360,7 +375,12 @@ public class Purchase extends JFrame {
             return "수동";
         }
     }
-
+    
+    private void modifyLottery(int rowIndex) {
+    	String value = resultLabels[rowIndex][1].getText();
+    	System.out.println("수정" + rowIndex + value);
+    }
+    
     // 실행
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
