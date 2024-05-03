@@ -269,14 +269,14 @@ public class Purchase extends JFrame {
 
     // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
-    	// 자동카테고리
+    	// 1부터 45까지의 숫자가 담긴 리스트 생성
+    	ArrayList<Integer> numbers = new ArrayList<>();
+    	for (int i = 1; i <= 45; i++) {
+    		numbers.add(i);
+    	}
+    	
+    	// 자동 카테고리
     	if (selectedIndex == 0) {
-            // 1부터 45까지의 숫자가 담긴 리스트 생성
-        	ArrayList<Integer> numbers = new ArrayList<>();
-            for (int i = 1; i <= 45; i++) {
-                numbers.add(i);
-            }
-            
             // 무작위로 6개의 숫자 선택
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
@@ -284,7 +284,17 @@ public class Purchase extends JFrame {
                 selectedNumbers.add(numbers.get(index));
                 numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
-            
+        // 반자동 카테고리
+    	} else if (selectedIndex == 1){
+    		int selectedlength = selectedNumbers.size();
+    		// 무작위로 6개의 숫자 선택
+            Random random = new Random();
+            for (int i = 0; i < 6 - selectedlength; i++) {
+                int index = random.nextInt(numbers.size());
+                selectedNumbers.add(numbers.get(index));
+                numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+            }
+    	// 수동 카테고리
         } else {
         	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
         		JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
