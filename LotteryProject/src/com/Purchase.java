@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -18,6 +19,7 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -80,11 +82,11 @@ public class Purchase extends JFrame {
         numberPanels = new JPanel[ROWS][COLS];
         numberCellValues = new int[ROWS][COLS];
         numberCellStates = new boolean[ROWS][COLS];
-        selectedNumbers = new ArrayList<>();
+        selectedNumbers = new ArrayList<Integer>();
 
         JPanel numberPanel = new JPanel(new GridLayout(ROWS, COLS));
         numberPanel.setPreferredSize(new Dimension(400, 300));
-
+        
         int value = 1;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
@@ -178,6 +180,12 @@ public class Purchase extends JFrame {
                 	// 삭제 버튼
                 	JLabel deleteJLabel = new JLabel("삭제", SwingConstants.CENTER);
                 	deleteJLabel.setPreferredSize(new Dimension(60, 30));
+                	modifyJLabel.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            deleteLottery(rowIndex);
+                        }
+                    });
                 	
                     buttonPanel.add(modifyJLabel);
                     buttonPanel.add(deleteJLabel);
@@ -245,7 +253,7 @@ public class Purchase extends JFrame {
             return;
         }
         
-     // 자동 카테고리가 선택된 경우
+        // 자동 카테고리가 선택된 경우
         if (selectedIndex == 0) { 
             JOptionPane.showMessageDialog(null, "자동 카테고리에서는 숫자를 선택할 수 없습니다.");
             return;
@@ -276,7 +284,6 @@ public class Purchase extends JFrame {
             categoryCellStates[selectedIndex] = false;
             selectedIndex = -1;
         }
-
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
     
@@ -290,7 +297,6 @@ public class Purchase extends JFrame {
                 numberPanels[i][j].setEnabled(true); // 선택 가능하도록 설정
             }
         }
-        
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
 
@@ -304,15 +310,15 @@ public class Purchase extends JFrame {
     	
     	// 자동 카테고리: 무작위로 6개의 숫자 선택
     	if (selectedIndex == 0) {
-            // 
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
                 int index = random.nextInt(numbers.size());
                 selectedNumbers.add(numbers.get(index));
                 numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
-        // 반자동 카테고리: 나머지 숫자 자동 선택
-    	} else if (selectedIndex == 1){
+            
+        // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
+    	} else if (selectedIndex == 1) {
     		int selectedlength = selectedNumbers.size();
     		
     		if (selectedlength == 0) {
@@ -331,7 +337,7 @@ public class Purchase extends JFrame {
     		}
     		
     	// 수동 카테고리
-        } else {
+        } else if (selectedIndex == 2) {
         	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
         		JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
         		return;
@@ -343,6 +349,8 @@ public class Purchase extends JFrame {
         	}
         	
         }
+    	Collections.sort(selectedNumbers);
+    	
     	// 카테고리와 숫자를 맵형식으로 저장
     	Map<String, Object> selectionMap = new HashMap<>();
     	if (selectedIndex != -1) {
@@ -379,6 +387,11 @@ public class Purchase extends JFrame {
     private void modifyLottery(int rowIndex) {
     	String value = resultLabels[rowIndex][1].getText();
     	System.out.println("수정" + rowIndex + value);
+    }
+    
+    private void deleteLottery(int rowIndex) {
+    	String value = resultLabels[rowIndex][1].getText();
+    	System.out.println("삭제" + rowIndex + value);
     }
     
     // 실행
