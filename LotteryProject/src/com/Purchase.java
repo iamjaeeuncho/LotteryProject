@@ -257,6 +257,10 @@ public class Purchase extends JFrame {
         if (selectedIndex == 0) { 
             JOptionPane.showMessageDialog(null, "자동 카테고리에서는 숫자를 선택할 수 없습니다.");
             return;
+        // 반자동 카테고리가 선택된 경우
+        } else if (selectedIndex == 1 && selectedNumbers.size() >= ARRAY_SIZE - 1 && !numberCellStates[row][col]) { 
+        	JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
+    		return;
         }
         
         numberCellStates[row][col] = !numberCellStates[row][col];
@@ -299,7 +303,7 @@ public class Purchase extends JFrame {
         }
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
-
+    
     // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
     	// 1부터 45까지의 숫자가 담긴 리스트 생성
@@ -307,25 +311,28 @@ public class Purchase extends JFrame {
     	for (int i = 1; i <= 45; i++) {
     		numbers.add(i);
     	}
+    	if (clickCnt > 4) {
+    		JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
+    		return;
+    	}
     	
+    	// 카테고리 미선택시
+    	if (selectedIndex == -1) {
+    		JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
+    		return;
     	// 자동 카테고리: 무작위로 6개의 숫자 선택
-    	if (selectedIndex == 0) {
+    	} else if (selectedIndex == 0) {
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
                 int index = random.nextInt(numbers.size());
                 selectedNumbers.add(numbers.get(index));
                 numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
-            
         // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
     	} else if (selectedIndex == 1) {
     		int selectedlength = selectedNumbers.size();
-    		
     		if (selectedlength == 0) {
     			JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
-        		return;
-    		} else if (selectedlength > 5) {
-        		JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
         		return;
     		} else {
                 Random random = new Random();
@@ -335,20 +342,14 @@ public class Purchase extends JFrame {
                     numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
                 }
     		}
-    		
     	// 수동 카테고리
         } else if (selectedIndex == 2) {
         	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
         		JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
         		return;
         	}
-        	
-        	if (clickCnt > 4) {
-        		JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
-        		return;
-        	}
-        	
         }
+    	
     	Collections.sort(selectedNumbers);
     	
     	// 카테고리와 숫자를 맵형식으로 저장
@@ -390,8 +391,9 @@ public class Purchase extends JFrame {
     }
     
     private void deleteLottery(int rowIndex) {
-    	String value = resultLabels[rowIndex][1].getText();
-    	System.out.println("삭제" + rowIndex + value);
+    	for (int i = 0; i < 2; i++) {    		
+    		resultLabels[rowIndex][i].setText("");
+    	}
     }
     
     // 실행
