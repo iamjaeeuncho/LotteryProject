@@ -3,10 +3,8 @@ package com;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -19,9 +17,7 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JLabel;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -34,11 +30,19 @@ public class Purchase extends JFrame {
     private JPanel[][] numberPanels;
     private int[][] numberCellValues;
     private boolean[][] numberCellStates;
-    private final int ROWS = 7;
-    private final int COLS = 7;
-    private final int ARRAY_SIZE = 6;
     private ArrayList<Integer> selectedNumbers;
+    private final int NUMBER_ROWS = 7;
+    private final int NUMBER_COLS = 7;
+    private final int NUMBER_ARRAY_SIZE = 6;
 
+    private JPanel[][] resultPanels;
+    private String[][] resultCellValues;
+    private boolean[][] resultCellStates;
+    private ArrayList<String> selectedResult;
+    private final int RESULT_ROWS = 5;
+    private final int RESULT_COLS = 3;
+    private final int RESULT_ARRAY_SIZE = 6;
+    
     private JLabel[][] resultLabels;
     private int clickCnt = 0;
 
@@ -79,23 +83,23 @@ public class Purchase extends JFrame {
         }
 
         // 2. 숫자 6자리 입력
-        numberPanels = new JPanel[ROWS][COLS];
-        numberCellValues = new int[ROWS][COLS];
-        numberCellStates = new boolean[ROWS][COLS];
+        numberPanels = new JPanel[NUMBER_ROWS][NUMBER_COLS];
+        numberCellValues = new int[NUMBER_ROWS][NUMBER_COLS];
+        numberCellStates = new boolean[NUMBER_ROWS][NUMBER_COLS];
         selectedNumbers = new ArrayList<Integer>();
 
-        JPanel numberPanel = new JPanel(new GridLayout(ROWS, COLS));
+        JPanel numberPanel = new JPanel(new GridLayout(NUMBER_ROWS, NUMBER_COLS));
         numberPanel.setPreferredSize(new Dimension(400, 300));
         
-        int value = 1;
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
+        int num = 1;
+        for (int i = 0; i < NUMBER_ROWS; i++) {
+            for (int j = 0; j < NUMBER_COLS; j++) {
                 numberPanels[i][j] = new JPanel(new GridBagLayout());
                 numberPanels[i][j].setBackground(Color.WHITE);
                 numberPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 
-                if (value <= 45) {
-                    numberCellValues[i][j] = value;
+                if (num <= 45) {
+                    numberCellValues[i][j] = num;
                     JLabel label = new JLabel(String.valueOf(numberCellValues[i][j]));
                     numberPanels[i][j].add(label);
                     
@@ -116,7 +120,7 @@ public class Purchase extends JFrame {
                 }
                 
                 numberPanel.add(numberPanels[i][j]);
-                value++;
+                num++;
             }
         }
 
@@ -153,48 +157,61 @@ public class Purchase extends JFrame {
         menuPanel.add(menuLabel);
 
         // 2. 결과 출력
-        JPanel resultPanel = new JPanel(new GridLayout(5, 3));
+        resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
+        resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
+        resultCellStates = new boolean[RESULT_ROWS][RESULT_COLS];
+        selectedResult = new ArrayList<String>();
+                
+        JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
         resultPanel.setPreferredSize(new Dimension(600, 300));
-        resultLabels = new JLabel[5][3];
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 3; j++) {
-                resultLabels[i][j] = new JLabel("  ", SwingConstants.CENTER);
-                resultLabels[i][j].setOpaque(true);
-                resultLabels[i][j].setBackground(Color.WHITE);
-                resultLabels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        String value = "";
+        resultLabels = new JLabel[RESULT_ROWS][RESULT_COLS];
+
+        for (int i = 0; i < RESULT_ROWS; i++) {
+            for (int j = 0; j < RESULT_COLS; j++) {
+                resultPanels[i][j] = new JPanel(new GridBagLayout());
+                resultPanels[i][j].setBackground(Color.WHITE);
+                resultPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+                resultCellValues[i][j] = value;
+                resultLabels[i][j] = new JLabel(String.valueOf(resultCellValues[i][j]));
+                resultPanels[i][j].add(resultLabels[i][j]);
+
                 if (j == 2) {
-                	JPanel buttonPanel = new JPanel(new GridBagLayout());
-                	
-                	int rowIndex = i;
-                	
-                	// 수정 버튼
-                	JLabel modifyLabel = new JLabel("수정", SwingConstants.CENTER);
-                	modifyLabel.setPreferredSize(new Dimension(60, 30));
-                	modifyLabel.addMouseListener(new MouseAdapter() {
+                    JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+
+                    int rowIndex = i;
+
+                    // 수정 버튼
+                    JLabel modifyLabel = new JLabel("수정", SwingConstants.CENTER);
+                    modifyLabel.setPreferredSize(new Dimension(60, 30));
+                    modifyLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             modifyLottery(rowIndex);
                         }
                     });
-                	
-                	// 삭제 버튼
-                	JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
-                	deleteLabel.setPreferredSize(new Dimension(60, 30));
-                	deleteLabel.addMouseListener(new MouseAdapter() {
+
+                    // 삭제 버튼
+                    JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
+                    deleteLabel.setPreferredSize(new Dimension(60, 30));
+                    deleteLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             deleteLottery(rowIndex);
                         }
                     });
-                	
+
                     buttonPanel.add(modifyLabel);
                     buttonPanel.add(deleteLabel);
-                    
-                    resultLabels[i][j].setLayout(new BorderLayout());
-                    resultLabels[i][j].add(buttonPanel, BorderLayout.CENTER);
                     buttonPanel.setBackground(Color.WHITE);
+
+                    resultPanels[i][j].setLayout(new BorderLayout());
+                    resultPanels[i][j].add(buttonPanel, BorderLayout.CENTER);
                 }
-                resultPanel.add(resultLabels[i][j]);
+
+                resultPanel.add(resultPanels[i][j]);
             }
         }
 
@@ -249,7 +266,7 @@ public class Purchase extends JFrame {
     // 숫자 선택 효과
     private void toggleNumber(int row, int col) {
         // 6개 이상 선택할 때
-        if (selectedNumbers.size() >= ARRAY_SIZE && !numberCellStates[row][col]) {
+        if (selectedNumbers.size() >= NUMBER_ARRAY_SIZE && !numberCellStates[row][col]) {
             return;
         }
         
@@ -258,7 +275,7 @@ public class Purchase extends JFrame {
             JOptionPane.showMessageDialog(null, "자동 카테고리에서는 숫자를 선택할 수 없습니다.");
             return;
         // 반자동 카테고리가 선택된 경우
-        } else if (selectedIndex == 1 && selectedNumbers.size() >= ARRAY_SIZE - 1 && !numberCellStates[row][col]) { 
+        } else if (selectedIndex == 1 && selectedNumbers.size() >= NUMBER_ARRAY_SIZE - 1 && !numberCellStates[row][col]) { 
         	JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최대 5개까지 선택 가능합니다");
     		return;
         }
@@ -293,8 +310,8 @@ public class Purchase extends JFrame {
     
     // 숫자 초기화
     private void resetNumbers() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < NUMBER_ROWS; i++) {
+            for (int j = 0; j < NUMBER_COLS; j++) {
                 numberCellStates[i][j] = false;
                 numberPanels[i][j].setBackground(Color.WHITE);
                 numberPanels[i][j].setForeground(Color.BLACK);
@@ -344,8 +361,8 @@ public class Purchase extends JFrame {
     		}
     	// 수동 카테고리
         } else if (selectedIndex == 2) {
-        	if (selectedNumbers.size() != ARRAY_SIZE || selectedIndex == -1) {
-        		JOptionPane.showMessageDialog(null, "카테고리와 " + ARRAY_SIZE + "개 숫자를 선택해주세요");
+        	if (selectedNumbers.size() != NUMBER_ARRAY_SIZE || selectedIndex == -1) {
+        		JOptionPane.showMessageDialog(null, "카테고리와 " + NUMBER_ARRAY_SIZE + "개 숫자를 선택해주세요");
         		return;
         	}
         }
