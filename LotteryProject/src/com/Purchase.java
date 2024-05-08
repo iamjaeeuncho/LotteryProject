@@ -324,25 +324,27 @@ public class Purchase extends JFrame {
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
     
-    // 선택된 카테고리와 숫자 출력
+ // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
-    	// 1부터 45까지의 숫자가 담긴 리스트 생성
-    	ArrayList<Integer> randomNumbers = new ArrayList<>();
-    	for (int i = 1; i <= 45; i++) {
-    		randomNumbers.add(i);
-    	}
-    	
-    	if (clickCnt > 4) {
-    		JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
-    		return;
-    	}
-    	
-    	// 카테고리 미선택시
-    	if (selectedIndex == -1) {
-    		JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
-    		return;
-    	// 자동 카테고리: 무작위로 6개의 숫자 선택
-    	} else if (selectedIndex == 0) {
+        // 1부터 45까지의 숫자가 담긴 리스트 생성
+        ArrayList<Integer> randomNumbers = new ArrayList<>();
+        for (int i = 1; i <= 45; i++) {
+            randomNumbers.add(i);
+        }
+
+        if (clickCnt > 4) {
+            JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
+            return;
+        }
+
+        // 카테고리 미선택시
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
+            return;
+        }
+
+        // 자동 카테고리: 무작위로 6개의 숫자 선택
+        if (selectedIndex == 0) {
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
                 int index = random.nextInt(randomNumbers.size());
@@ -350,51 +352,58 @@ public class Purchase extends JFrame {
                 randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
         // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
-    	} else if (selectedIndex == 1) {
-    		int selectedlength = selectedNumbers.size();
-    		if (selectedlength == 0) {
-    			JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
-        		return;
-    		} else {
+        } else if (selectedIndex == 1) {
+            int selectedlength = selectedNumbers.size();
+            if (selectedlength == 0) {
+                JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
+                return;
+            } else {
                 Random random = new Random();
                 for (int i = 0; i < 6 - selectedlength; i++) {
                     int index = random.nextInt(randomNumbers.size());
                     selectedNumbers.add(randomNumbers.get(index));
                     randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
                 }
-    		}
-    	// 수동 카테고리
+            }
+        // 수동 카테고리
         } else if (selectedIndex == 2) {
-        	if (selectedNumbers.size() != NUMBER_ARRAY_SIZE || selectedIndex == -1) {
-        		JOptionPane.showMessageDialog(null, "카테고리와 " + NUMBER_ARRAY_SIZE + "개 숫자를 선택해주세요");
-        		return;
-        	}
+            if (selectedNumbers.size() != NUMBER_ARRAY_SIZE || selectedIndex == -1) {
+                JOptionPane.showMessageDialog(null, "카테고리와 " + NUMBER_ARRAY_SIZE + "개 숫자를 선택해주세요");
+                return;
+            }
         }
-    	
-    	Collections.sort(selectedNumbers);
-    	
-    	// 카테고리와 숫자를 맵형식으로 저장
-    	Map<String, Object> selectionMap = new HashMap<>();
-    	if (selectedIndex != -1) {
-    		String selectedCategory = getCategoryName(selectedIndex);
-    		selectionMap.put("category", selectedCategory);
-    	}
-    	
-    	selectionMap.put("numbers", selectedNumbers);
-    	
-    	for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
-    		if (entry.getKey().equals("category")) {
-    			resultLabels[clickCnt][0].setText(entry.getValue().toString());
-    		} else if (entry.getKey().equals("numbers")) {
-    			resultLabels[clickCnt][1].setText(entry.getValue().toString());
-    		}
-    	}
-    	
+
+        Collections.sort(selectedNumbers);
+
+        // 카테고리와 숫자를 맵형식으로 저장
+        Map<String, Object> selectionMap = new HashMap<>();
+        if (selectedIndex != -1) {
+            String selectedCategory = getCategoryName(selectedIndex);
+            selectionMap.put("category", selectedCategory);
+        }
+
+        selectionMap.put("numbers", selectedNumbers);
+
+        // 비어 있는 행에 결과 입력
+        for (int i = 0; i < RESULT_ROWS; i++) {
+            if (resultLabels[i][0].getText().isEmpty()) {
+                for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
+                    if (entry.getKey().equals("category")) {
+                        resultLabels[i][0].setText(entry.getValue().toString());
+                    } else if (entry.getKey().equals("numbers")) {
+                        resultLabels[i][1].setText(entry.getValue().toString());
+                    }
+                }
+                break;
+            }
+        }
+
         clickCnt++;
 
         resetCategory(); // 초기화
         resetNumbers();
     }
+
     
     private int[] getSavedNumbers() {
         // 수동으로 선택된 숫자만 배열로 반환
