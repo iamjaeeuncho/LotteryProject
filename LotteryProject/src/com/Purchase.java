@@ -31,6 +31,7 @@ public class Purchase extends JFrame {
     private int[][] numberCellValues;
     private boolean[][] numberCellStates;
     private ArrayList<Integer> selectedNumbers;
+    private ArrayList<Integer> savedNumbers;
     private final int NUMBER_ROWS = 7;
     private final int NUMBER_COLS = 7;
     private final int NUMBER_ARRAY_SIZE = 6;
@@ -38,10 +39,9 @@ public class Purchase extends JFrame {
     private JPanel[][] resultPanels;
     private String[][] resultCellValues;
     private boolean[][] resultCellStates;
-    private ArrayList<String> selectedResult;
+    private ArrayList<String> resultNumbers;
     private final int RESULT_ROWS = 5;
     private final int RESULT_COLS = 3;
-    private final int RESULT_ARRAY_SIZE = 6;
     
     private JLabel[][] resultLabels;
     private int clickCnt = 0;
@@ -160,7 +160,8 @@ public class Purchase extends JFrame {
         resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
         resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
         resultCellStates = new boolean[RESULT_ROWS][RESULT_COLS];
-        selectedResult = new ArrayList<String>();
+        resultNumbers = new ArrayList<String>();
+        savedNumbers = new ArrayList<Integer>();
                 
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
         resultPanel.setPreferredSize(new Dimension(600, 300));
@@ -291,9 +292,11 @@ public class Purchase extends JFrame {
         if (numberCellStates[row][col]) {
             if (!selectedNumbers.contains(value)) {
                 selectedNumbers.add(value);
+                savedNumbers.add(value);
             }
         } else {
             selectedNumbers.remove(Integer.valueOf(value));
+            savedNumbers.remove(Integer.valueOf(value));
         }
     }
 
@@ -324,10 +327,11 @@ public class Purchase extends JFrame {
     // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
     	// 1부터 45까지의 숫자가 담긴 리스트 생성
-    	ArrayList<Integer> numbers = new ArrayList<>();
+    	ArrayList<Integer> randomNumbers = new ArrayList<>();
     	for (int i = 1; i <= 45; i++) {
-    		numbers.add(i);
+    		randomNumbers.add(i);
     	}
+    	
     	if (clickCnt > 4) {
     		JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
     		return;
@@ -341,9 +345,9 @@ public class Purchase extends JFrame {
     	} else if (selectedIndex == 0) {
             Random random = new Random();
             for (int i = 0; i < 6; i++) {
-                int index = random.nextInt(numbers.size());
-                selectedNumbers.add(numbers.get(index));
-                numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+                int index = random.nextInt(randomNumbers.size());
+                selectedNumbers.add(randomNumbers.get(index));
+                randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
         // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
     	} else if (selectedIndex == 1) {
@@ -354,9 +358,9 @@ public class Purchase extends JFrame {
     		} else {
                 Random random = new Random();
                 for (int i = 0; i < 6 - selectedlength; i++) {
-                    int index = random.nextInt(numbers.size());
-                    selectedNumbers.add(numbers.get(index));
-                    numbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+                    int index = random.nextInt(randomNumbers.size());
+                    selectedNumbers.add(randomNumbers.get(index));
+                    randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
                 }
     		}
     	// 수동 카테고리
@@ -392,6 +396,16 @@ public class Purchase extends JFrame {
         resetNumbers();
     }
     
+    private int[] getSavedNumbers() {
+        // 수동으로 선택된 숫자만 배열로 반환
+        int[] result = new int[savedNumbers.size()];
+        int index = 0;
+        for (int num : savedNumbers) {
+            result[index++] = num;
+        }
+        return result;
+    }
+    
     private String getCategoryName(int index) {
         if (index == 0) {
             return "자동";
@@ -403,8 +417,22 @@ public class Purchase extends JFrame {
     }
     
     private void modifyLottery(int rowIndex) {
-    	String value = resultLabels[rowIndex][1].getText();
-    	System.out.println("수정" + rowIndex + value);
+    	String category = resultLabels[rowIndex][0].getText();
+    	if (category.equals("자동")) {
+    		toggleCategory(0);
+    	} else if (category.equals("반자동")) {
+    		toggleCategory(1);
+    	} else if (category.equals("수동")) {
+    		toggleCategory(2);
+    	}
+    	
+    	int[] result = getSavedNumbers();
+        for (int num : result) {
+            int row = num / NUMBER_ROWS;
+            int column = num % NUMBER_COLS - 1;
+
+            toggleNumber(row, column);
+        }
     }
     
     private void deleteLottery(int rowIndex) {
