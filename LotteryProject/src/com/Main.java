@@ -1,47 +1,80 @@
 package com;
 
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-//로그인 되었을 때는 다른 메인 페이지
+
 
 public class Main extends JFrame {
+    private JPanel currentPanel;
+    private Category category;
+    private Chat chat;
+    private int userNo;
 
-	public Main() {
-		setTitle("가슴속에 복권 한장");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // JFrame닫을 때 JVM 종료
-		setSize(1000, 900); // 프레임 크기 설정	
-		setLayout(new BorderLayout()); //배치 관리자 설정	
-		Categoty cate = new Categoty();	
-		JPanel panel= new JPanel();
-		Login login=new Login();
-		panel.add(login);
-		add("North", cate.panel);
-		
-		JButton loginbut =cate.login;
-		
-		//로그인 버튼 클릭
-		loginbut.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("로그인 버튼 클릭");
-				add("Center", panel);
-				revalidate(); // 변경된 내용을 다시 그리도록 갱신
-			}
-		});
-		
-		setVisible(true);
-	}
+    public Main(int userNo) {
+        this.userNo = userNo;
+        initializeUI();
+    }
 
-	public static void main(String[] args) {
-		Main main = new Main();
-	}
+    public Main() {
+        initializeUI();
+    }
 
+    private void initializeUI() {
+        category = new Category();
+        setTitle("가슴속에 복권 한장");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1000, 900);
+        setLayout(new BorderLayout());
+        add("North", category.panel);
 
+        JButton loginBtn = category.login;
+        JButton chatBtn = category.chat;
+
+        Lsistener listener = new Lsistener();
+
+        loginBtn.addActionListener(listener);
+        chatBtn.addActionListener(listener);
+
+        setVisible(true);
+    }
+
+    private class Lsistener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton but = (JButton) e.getSource();
+            if (but == category.login) {
+                removeCurrentPanel();
+                JPanel panel = new JPanel();
+                panel.add(new Login(Main.this));
+                add("Center", panel);
+                currentPanel = panel;
+            } else if (but == category.chat) {
+                removeCurrentPanel();
+                chat = new Chat(userNo);
+                add("Center", chat);
+                currentPanel = chat;
+            }
+            revalidate();
+            repaint();
+        }
+    }
+
+    private void removeCurrentPanel() {
+        if (currentPanel != null) {
+            remove(currentPanel);
+        }
+    }
+
+    public void setUserNo(int userNo) {
+        this.userNo = userNo;
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+    }
 }

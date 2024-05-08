@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,9 +24,11 @@ public class Login extends JPanel implements ActionListener {
 	private JButton SignUpButton;
 	private JTextField name;
 	private JTextField email;
-	
-	UserDAO udao=new UserDAO();
-	public Login() {
+	private UserDAO udao=new UserDAO();
+	private Main main;
+	 
+	public Login(Main main) {
+		this.main=main;
 		// JPanel initialization
 		setLayout(new GridLayout(3, 2)); // Set layout for the JPanel
 
@@ -44,13 +47,14 @@ public class Login extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String userid=userId.getText(); //여기가 에러야
+				String userid=userId.getText(); 
 				String password=passwd.getText();
 				Object obj= udao.signIn(userid, password);
 				int userNo = ((BigDecimal)obj).intValue();
-				System.out.println(userNo);
 				if(userNo>0) {
-					System.out.println("로그인 성공");
+					// main 으로 변경
+					main.setUserNo(userNo); // 사용자 번호 설정
+					System.out.println("로그인에서 유저"+userNo);
 				}else{
 					JOptionPane.showMessageDialog(null,"아이디와 비밀번호를 확인하세요");
 					//null인 경우 다이얼로그가 화면 중앙에 표시
@@ -72,7 +76,6 @@ public class Login extends JPanel implements ActionListener {
         if (e.getSource() == SignInButton) {
         	
         } else if (e.getSource() == SignUpButton) {
-        	System.out.println("회원가입 버튼");
         	JFrame frame=new JFrame();
         	frame.setTitle("회원가입");
         	frame.setSize(600, 200); // 프레임 크기 설정	
@@ -103,14 +106,19 @@ public class Login extends JPanel implements ActionListener {
             frame.setVisible(true); // 프레임을 보이도록 설정
             signUp.addActionListener(new ActionListener() {
     			@Override
-    			public void actionPerformed(ActionEvent e) {
-    				System.out.println("회원 가입 버튼 클릭");
+    			public void actionPerformed(ActionEvent e)  {
     				revalidate(); // 변경된 내용을 다시 그리도록 갱신
     				String name1=name.getText();
     				String name2=userId.getText();
     				String name3=email.getText();
     				String name4=passwd.getText();
-    				String mesg=udao.signUp(name1,name2,name3,name4);				
+    				String mesg = null;
+					try {
+						mesg = udao.signUp(name1,name2,name3,name4);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}				
     				if(mesg.equals("회원가입이 완료되었습니다.")) {
     					JOptionPane.showMessageDialog(null,mesg);
     					frame.dispose();
@@ -121,5 +129,6 @@ public class Login extends JPanel implements ActionListener {
     		});//event
         }
     }
+
 
 }

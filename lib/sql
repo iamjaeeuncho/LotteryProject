@@ -42,3 +42,65 @@ BEGIN
     END IF;
 END;
 /
+
+--이름 가져오기
+CREATE OR REPLACE PROCEDURE USERNAME(
+    p_userNo IN VARCHAR2,
+    o_userName OUT VARCHAR2
+)
+IS
+BEGIN
+    SELECT username INTO o_userName FROM LOTTERY_USER WHERE USERNO = p_userNo;
+END;
+/
+
+
+
+--채팅방 패키지
+CREATE OR REPLACE PACKAGE CHAT_PAK AS
+  PROCEDURE ADD_PROD(p_userNo IN chat.userno%type, chatName IN chat.chatname%type);
+  PROCEDURE CHATLIST_PROD(chatList OUT SYS_REFCURSOR);
+END CHAT_PAK;
+/
+
+CREATE OR REPLACE PACKAGE BODY CHAT_PAK AS
+  PROCEDURE ADD_PROD(p_userNo IN chat.userno%type, chatName IN chat.chatname%type) IS
+  BEGIN
+    INSERT INTO chat(userNo, chatName, status)
+    VALUES(p_userNo, chatName, 'Y');
+  END ADD_PROD;
+  
+  PROCEDURE CHATLIST_PROD(chatList OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN chatList FOR SELECT * FROM CHAT ORDER BY chatno;
+  END CHATLIST_PROD;
+  
+END CHAT_PAK;
+/
+
+
+--메세지 패키지
+CREATE OR REPLACE PACKAGE MESG_PAK AS
+  PROCEDURE SAVECHAT_PROD
+  (p_userNo IN message.userno%type, p_text IN message.content%type, p_chatno IN message.chatno%type); --채팅 저장
+  PROCEDURE MESGLIST_PROD
+  (p_chatNO IN message.chatno%type,mesgList OUT SYS_REFCURSOR); --메세지 리스트
+END MESG_PAK;
+/
+CREATE OR REPLACE PACKAGE BODY MESG_PAK AS
+  PROCEDURE SAVECHAT_PROD(p_userNo IN message.userno%type, p_text IN message.content%type, p_chatno IN message.chatno%type) IS
+  BEGIN
+    INSERT INTO message(userNo, content, chatNo,status)
+    VALUES(p_userNo, p_text,p_chatno,'Y');
+  END SAVECHAT_PROD;
+  
+  PROCEDURE MESGLIST_PROD(p_chatNO IN message.chatno%type,mesgList OUT SYS_REFCURSOR)
+  IS
+  BEGIN
+  OPEN mesgList FOR SELECT m.*,u.username FROM message m LEFT OUTER JOIN lottery_user u
+     ON m.userNo=u.userNo
+  where chatno=p_chatNO ORDER BY mesgno;
+  END MESGLIST_PROD;
+
+END MESG_PAK;
+/
