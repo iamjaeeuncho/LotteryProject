@@ -327,13 +327,6 @@ public class Purchase extends JFrame {
             randomNumbers.add(i);
         }
 
-        for (int i = 0; i < RESULT_ROWS; i++) {
-    		if (resultLabels[i][0].equals("")) {
-    			JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
-                return;
-    		}
-        }
-
         // 카테고리 미선택시
         if (selectedIndex == -1) {
             JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
@@ -452,6 +445,15 @@ public class Purchase extends JFrame {
     	for (int i = 0; i < 2; i++) {    		
     		resultLabels[rowIndex][i].setText("");
     	}
+    }
+    
+    private void registerLottery() {
+    	for (int i = 0; i < RESULT_ROWS; i++) {
+    		if (resultLabels[i][0].getText().equals("")) {
+    			JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최소 1개가 있어야 발급 가능합니다");
+                return;
+    		}
+        }
     }
     
     // 실행
