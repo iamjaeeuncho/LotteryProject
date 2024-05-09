@@ -404,6 +404,15 @@ public class Purchase extends JFrame {
         resetNumbers();
     }
 
+    private String getCategoryName(int index) {
+    	if (index == 0) {
+    		return "자동";
+    	} else if (index == 1) {
+    		return "반자동";
+    	} else {
+    		return "수동";
+    	}
+    }
     
     private int[] getSavedNumbers() {
         // 수동으로 선택된 숫자만 배열로 반환
@@ -415,14 +424,8 @@ public class Purchase extends JFrame {
         return result;
     }
     
-    private String getCategoryName(int index) {
-        if (index == 0) {
-            return "자동";
-        } else if (index == 1) {
-            return "반자동";
-        } else {
-            return "수동";
-        }
+    private void WeightedRandom() {
+    	
     }
     
     private void modifyLottery(int rowIndex) {
@@ -435,13 +438,16 @@ public class Purchase extends JFrame {
     		toggleCategory(2);
     	}
     	
-    	int[] result = getSavedNumbers();
-        for (int num : result) {
-            int row = num / NUMBER_ROWS;
-            int column = num % NUMBER_COLS - 1;
-
-            toggleNumber(row, column);
+    	for (int i = 0; i < NUMBER_ROWS; i++) {
+            for (int j = 0; j < NUMBER_COLS; j++) {
+                int value = numberCellValues[i][j];
+                if (savedNumbers.contains(value)) {
+                    toggleNumber(i, j);
+                }
+            }
         }
+    	
+        deleteLottery(rowIndex);
     }
     
     private void deleteLottery(int rowIndex) {
