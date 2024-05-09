@@ -38,13 +38,10 @@ public class Purchase extends JFrame {
 
     private JPanel[][] resultPanels;
     private String[][] resultCellValues;
-    private boolean[][] resultCellStates;
-    private ArrayList<String> resultNumbers;
     private final int RESULT_ROWS = 5;
     private final int RESULT_COLS = 3;
     
     private JLabel[][] resultLabels;
-    private int clickCnt = 0;
 
     public Purchase() {
         setTitle("Purchase");
@@ -159,8 +156,6 @@ public class Purchase extends JFrame {
         // 2. 결과 출력
         resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
         resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
-        resultCellStates = new boolean[RESULT_ROWS][RESULT_COLS];
-        resultNumbers = new ArrayList<String>();
         savedNumbers = new ArrayList<Integer>();
                 
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
@@ -332,9 +327,11 @@ public class Purchase extends JFrame {
             randomNumbers.add(i);
         }
 
-        if (clickCnt > 4) {
-            JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
-            return;
+        for (int i = 0; i < RESULT_ROWS; i++) {
+    		if (resultLabels[i][0].equals("")) {
+    			JOptionPane.showMessageDialog(null, "복권은 한번에 최대 5개까지만 발급 가능합니다");
+                return;
+    		}
         }
 
         // 카테고리 미선택시
@@ -398,8 +395,6 @@ public class Purchase extends JFrame {
             }
         }
 
-        clickCnt++;
-
         resetCategory(); // 초기화
         resetNumbers();
     }
@@ -430,6 +425,7 @@ public class Purchase extends JFrame {
     
     private void modifyLottery(int rowIndex) {
     	String category = resultLabels[rowIndex][0].getText();
+    	
     	if (category.equals("자동")) {
     		toggleCategory(0);
     	} else if (category.equals("반자동")) {
@@ -437,6 +433,8 @@ public class Purchase extends JFrame {
     	} else if (category.equals("수동")) {
     		toggleCategory(2);
     	}
+    	
+    	selectedNumbers.clear();
     	
     	for (int i = 0; i < NUMBER_ROWS; i++) {
             for (int j = 0; j < NUMBER_COLS; j++) {
