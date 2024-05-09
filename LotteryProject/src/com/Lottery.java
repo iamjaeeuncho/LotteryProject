@@ -22,7 +22,14 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-public class Purchase extends JFrame {
+import com.dao.LotteryDAO;
+import com.dto.LotteryVO;
+
+public class Lottery extends JFrame {
+	
+	LotteryDAO lotteryDao = new LotteryDAO();
+	LotteryVO lotteryVo = new LotteryVO();
+	
     private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
     private int selectedIndex = -1;
@@ -43,7 +50,7 @@ public class Purchase extends JFrame {
     
     private JLabel[][] resultLabels;
 
-    public Purchase() {
+    public Lottery() {
         setTitle("Purchase");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
@@ -206,7 +213,6 @@ public class Purchase extends JFrame {
                     resultPanels[i][j].setLayout(new BorderLayout());
                     resultPanels[i][j].add(buttonPanel, BorderLayout.CENTER);
                 }
-
                 resultPanel.add(resultPanels[i][j]);
             }
         }
@@ -222,7 +228,7 @@ public class Purchase extends JFrame {
         registerLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                selectLottery();
+            	lotteryDao.SaveLottery(saveLottery());
             }
         });
         registerPanel.add(registerLabel);
@@ -326,6 +332,10 @@ public class Purchase extends JFrame {
         for (int i = 1; i <= 45; i++) {
             randomNumbers.add(i);
         }
+        
+//		if (!resultLabels[RESULT_ROWS][0].getText().equals("")) {
+//			JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최소 1개가 있어야 발급 가능합니다");
+//		}
 
         // 카테고리 미선택시
         if (selectedIndex == -1) {
@@ -418,7 +428,6 @@ public class Purchase extends JFrame {
     
     private void modifyLottery(int rowIndex) {
     	String category = resultLabels[rowIndex][0].getText();
-    	
     	if (category.equals("자동")) {
     		toggleCategory(0);
     	} else if (category.equals("반자동")) {
@@ -437,7 +446,6 @@ public class Purchase extends JFrame {
                 }
             }
         }
-    	
         deleteLottery(rowIndex);
     }
     
@@ -447,19 +455,25 @@ public class Purchase extends JFrame {
     	}
     }
     
-    private void registerLottery() {
-    	for (int i = 0; i < RESULT_ROWS; i++) {
-    		if (resultLabels[i][0].getText().equals("")) {
-    			JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최소 1개가 있어야 발급 가능합니다");
-                return;
-    		}
+    private Map<Integer, Object> saveLottery() {    	
+    	// 카테고리와 숫자를 맵형식으로 저장
+    	Map<Integer, Object> lotteryMap = new HashMap<>();
+
+        for (int i = 1; i <= RESULT_ROWS; i++) {
+        	int index = i;
+            String category = resultLabels[i - 1][0].getText();
+            String numbers = resultLabels[i - 1][1].getText();
+
+            lotteryMap.put(index, new String[]{category, numbers});
+            System.out.println(index + category + numbers);
         }
+        return lotteryMap;
     }
     
     // 실행
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new Purchase();
+            new Lottery();
         });
     }
 }
