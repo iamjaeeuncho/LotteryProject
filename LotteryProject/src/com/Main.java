@@ -39,21 +39,20 @@ public class Main extends JFrame {
 
         loginBtn.addActionListener(listener);
         chatBtn.addActionListener(listener);
-
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private class Lsistener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button == category.login) {
+            JButton but = (JButton) e.getSource();
+            if (but == category.login) {
                 removeCurrentPanel();
-                JPanel panel = new JPanel();
-                panel.add(new Login(Main.this));
-                add("Center", panel);
-                currentPanel = panel;
-            } else if (button == category.chat) {
+                Login loginPanel = new Login(Main.this); // 로그인 패널 생성
+                add("Center", loginPanel); // 로그인 패널을 메인 프레임의 중앙에 추가
+                currentPanel = loginPanel; // currentPanel을 로그인 패널로 설정
+            } else if (but == category.chat) {
                 removeCurrentPanel();
                 chat = new Chat(userNo);
                 add("Center", chat);

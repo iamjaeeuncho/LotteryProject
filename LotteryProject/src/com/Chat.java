@@ -1,12 +1,10 @@
 package com;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -15,6 +13,7 @@ import com.dao.UserDAO;
 import com.dto.ChatVO;
 
 public class Chat extends JPanel {
+	
 	int userNo;
 	Category cate = new Category();
 	ChatDAO cdao = new ChatDAO();
@@ -23,13 +22,8 @@ public class Chat extends JPanel {
     public Chat(int userNo) {
     	this.userNo=userNo;
         setLayout( null ); 
-        System.out.println("쳇에서 유저"+userNo);
-        JLabel useridLabel = new JLabel("오픈 채팅");
-        useridLabel.setBounds(10,40,150,23); //위치,너비 높이
-        useridLabel.setFont(new Font("Sans-serif",Font.BOLD,21));
         JButton mChat=new JButton("채팅방 생성");
         add(mChat);
-        add(useridLabel);
         
         mChat.setBounds(750,40,100,40);
         List<ChatVO> chatList = cdao.chatList();
@@ -49,9 +43,7 @@ public class Chat extends JPanel {
                     if (userNo > 0) {
                     	int chatNo=chatList.get(index).getChatNo();
                         JOptionPane.showMessageDialog(null, "채팅방에 참여하시겠습니까?");
-                        System.out.println("여기까지는 된다."+chatNo);
                         String userName=udao.userName(userNo);
-                        System.out.println(userName+chatNo);
                     	Client client=new Client(userNo,userName,chatNo);
                     	client.setVisible(true);
                     } else {
@@ -64,10 +56,8 @@ public class Chat extends JPanel {
         mChat.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("이게 왜 실행?");
 				if(userNo>0) {
 					String title = JOptionPane.showInputDialog("채팅방 제목을 입력하세요");
-					System.out.println("쳇,"+userNo+title);
 					cdao.addChat(userNo, title);
 			        List<ChatVO> chatList = cdao.chatList();
 			        int yOffset = 90; // 버튼의 초기 y 좌표

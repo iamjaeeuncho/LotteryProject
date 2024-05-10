@@ -6,10 +6,8 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
-import com.dao.ChatDAO;
-import com.dto.ChatVO;
+
 
 public class ChattingServer {
     private static ServerSocket serverSocket;
