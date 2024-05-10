@@ -29,7 +29,7 @@ public class Main extends JFrame {
         category = new Category();
         setTitle("가슴속에 복권 한장");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 900);
+        setSize(1400, 900);
         setLayout(new BorderLayout());
         add("North", category.panel);
 

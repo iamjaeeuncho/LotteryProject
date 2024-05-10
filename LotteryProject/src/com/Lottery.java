@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.dao.LotteryDAO;
 import com.dto.LotteryVO;
@@ -236,6 +237,8 @@ public class Lottery extends JPanel {
         // 메인 배치
         mainPanel.add(inputPanel, BorderLayout.WEST);
         mainPanel.add(outputPanel, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
     // ----------------- Methods -----------------
     // 카테고리 선택 효과
@@ -461,5 +464,4 @@ public class Lottery extends JPanel {
         }
         return lotteryMap;
     }
-
 }
