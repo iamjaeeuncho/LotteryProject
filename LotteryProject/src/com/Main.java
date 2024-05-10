@@ -35,11 +35,13 @@ public class Main extends JFrame {
 
         JButton loginBtn = category.login;
         JButton chatBtn = category.chat;
+        JButton lotteryBtn = category.lottery;
 
         Lsistener listener = new Lsistener();
 
         loginBtn.addActionListener(listener);
         chatBtn.addActionListener(listener);
+        lotteryBtn.addActionListener(listener);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -48,23 +50,26 @@ public class Main extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton but = (JButton) e.getSource();
+            
             if (but == category.lottery) {
-            	System.out.println("aaaaa");
                 removeCurrentPanel();
-                Lottery lotteryPanel = new Lottery(Main.this);
+                Lottery lotteryPanel = new Lottery();
                 add("Center", lotteryPanel);
                 currentPanel = lotteryPanel;
+                    
             } else if (but == category.login) {
                 removeCurrentPanel();
                 Login loginPanel = new Login(Main.this); // 로그인 패널 생성
                 add("Center", loginPanel); // 로그인 패널을 메인 프레임의 중앙에 추가
                 currentPanel = loginPanel; // currentPanel을 로그인 패널로 설정
+                
             } else if (but == category.chat) {
                 removeCurrentPanel();
                 chat = new Chat(userNo);
                 add("Center", chat);
                 currentPanel = chat;
             }
+            
             revalidate();
             repaint();
         }

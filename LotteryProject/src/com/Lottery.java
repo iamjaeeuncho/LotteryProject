@@ -14,12 +14,10 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import com.dao.LotteryDAO;
 import com.dto.LotteryVO;
@@ -49,15 +47,11 @@ public class Lottery extends JPanel {
     
     private JLabel[][] resultLabels;
 
-    public Lottery(Main main) {
-//        setTitle("Purchase");
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Lottery() {
         setBackground(Color.WHITE);
-        setSize(1000, 500);
+        setSize(700, 500);
         setVisible(true);
-
         JPanel mainPanel = new JPanel(new BorderLayout());
-//        setContentPane(mainPanel);
 
         // 1. 카테고리: 자동, 반자동, 수동
         categoryPanels = new JPanel[3];
@@ -154,7 +148,7 @@ public class Lottery extends JPanel {
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridLayout(1, 1));
         JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(600, 50));
+        menuPanel.setPreferredSize(new Dimension(700, 50));
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         menuPanel.add(menuLabel);
@@ -163,9 +157,9 @@ public class Lottery extends JPanel {
         resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
         resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
         savedNumbers = new ArrayList<Integer>();
-                
+
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
-        resultPanel.setPreferredSize(new Dimension(600, 300));
+        resultPanel.setPreferredSize(new Dimension(700, 500));
 
         String value = "";
         resultLabels = new JLabel[RESULT_ROWS][RESULT_COLS];
@@ -218,7 +212,7 @@ public class Lottery extends JPanel {
 
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new GridBagLayout());
-        registerPanel.setPreferredSize(new Dimension(600, 50));
+        registerPanel.setPreferredSize(new Dimension(700, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
         registerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -227,14 +221,14 @@ public class Lottery extends JPanel {
         registerLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            	lotteryDao.saveLottery(saveLottery());
+                lotteryDao.saveLottery(saveLottery());
             }
         });
         registerPanel.add(registerLabel);
 
         // 오른쪽 사이드
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setPreferredSize(new Dimension(600, 400));
+        outputPanel.setPreferredSize(new Dimension(700, 400));
         outputPanel.add(menuPanel, BorderLayout.NORTH);
         outputPanel.add(resultPanel, BorderLayout.CENTER);
         outputPanel.add(registerPanel, BorderLayout.SOUTH);
@@ -243,7 +237,6 @@ public class Lottery extends JPanel {
         mainPanel.add(inputPanel, BorderLayout.WEST);
         mainPanel.add(outputPanel, BorderLayout.CENTER);
     }
-
     // ----------------- Methods -----------------
     // 카테고리 선택 효과
     private void toggleCategory(int index) {
@@ -468,4 +461,5 @@ public class Lottery extends JPanel {
         }
         return lotteryMap;
     }
+
 }

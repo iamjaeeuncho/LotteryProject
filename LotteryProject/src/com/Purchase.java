@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-public class Purchase extends JFrame {
+public class Purchase extends JPanel {
     private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
     private int selectedIndex = -1;
@@ -47,14 +47,13 @@ public class Purchase extends JFrame {
     private int clickCnt = 0;
 
     public Purchase() {
-        setTitle("Purchase");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	System.out.println("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
+        setLayout(null);
         setBackground(Color.WHITE);
         setSize(1000, 500);
         setVisible(true);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        setContentPane(mainPanel);
 
         // 1. 카테고리: 자동, 반자동, 수동
         categoryPanels = new JPanel[3];
