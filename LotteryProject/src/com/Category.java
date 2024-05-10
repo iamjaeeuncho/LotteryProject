@@ -9,23 +9,28 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Category extends JFrame {
-	JButton login;
 	int userNo;
+	JButton lottery;
 	JButton chat;
+	JButton login;
 	JPanel panel = new JPanel();
 	
 	public Category() {
 
 
-	JButton main = new JButton("번호 생성");
-	main.setPreferredSize(new Dimension(230, 60));
-	main.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+	JButton lottery = new JButton("번호 생성");
+	System.out.println("2222222222222");
+	lottery.setPreferredSize(new Dimension(230, 60));
+	lottery.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+	
 	chat = new JButton("채팅");
 	chat.setPreferredSize(new Dimension(230, 60));
 	chat.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+	
 	JButton myPage = new JButton("내 정보");
 	myPage.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
 	myPage.setPreferredSize(new Dimension(230, 60));
+	
 	//////////////////////////////////ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
 	if(userNo>0) {
 	    login = new JButton("로그아웃");
@@ -38,7 +43,7 @@ public class Category extends JFrame {
 	}
 	
 	panel.setLayout(new FlowLayout());
-	panel.add(main);
+	panel.add(lottery);
 	panel.add(myPage);
 	panel.add(chat);
 	panel.add(login);

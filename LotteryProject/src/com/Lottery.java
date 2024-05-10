@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 import com.dao.LotteryDAO;
 import com.dto.LotteryVO;
 
-public class Lottery extends JFrame {
+public class Lottery extends JPanel {
 	
 	LotteryDAO lotteryDao = new LotteryDAO();
 	LotteryVO lotteryVo = new LotteryVO();
@@ -49,15 +49,15 @@ public class Lottery extends JFrame {
     
     private JLabel[][] resultLabels;
 
-    public Lottery() {
-        setTitle("Purchase");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Lottery(Main main) {
+//        setTitle("Purchase");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
         setSize(1000, 500);
         setVisible(true);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        setContentPane(mainPanel);
+//        setContentPane(mainPanel);
 
         // 1. 카테고리: 자동, 반자동, 수동
         categoryPanels = new JPanel[3];
@@ -467,12 +467,5 @@ public class Lottery extends JFrame {
             System.out.println(index + category + numbers);
         }
         return lotteryMap;
-    }
-    
-    // 실행
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Lottery();
-        });
     }
 }
