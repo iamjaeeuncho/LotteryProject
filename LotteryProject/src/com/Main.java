@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 
 public class Main extends JFrame {
+	private Lottery lottery;
     private JPanel currentPanel;
     private Category category;
     private Chat chat;
@@ -47,7 +48,13 @@ public class Main extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton but = (JButton) e.getSource();
-            if (but == category.login) {
+            if (but == category.lottery) {
+            	System.out.println("aaaaa");
+                removeCurrentPanel();
+                Lottery lotteryPanel = new Lottery(Main.this);
+                add("Center", lotteryPanel);
+                currentPanel = lotteryPanel;
+            } else if (but == category.login) {
                 removeCurrentPanel();
                 Login loginPanel = new Login(Main.this); // 로그인 패널 생성
                 add("Center", loginPanel); // 로그인 패널을 메인 프레임의 중앙에 추가
