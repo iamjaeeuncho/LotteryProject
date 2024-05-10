@@ -15,9 +15,9 @@ public class LotteryDAO {
     private String sql;
 
     // 로또 번호 저장
-    public void SaveLottery(Map<Integer, Object> results) {
-        sql = "INSERT INTO LOTTERY (USERNO, CATEGORY, CREATEDAT, MODIFEDAT, LOTTERY1, LOTTERY2, LOTTERY3, LOTTERY4, LOTTERY5, LOTTERY6, STATUS) VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 'Y')";
-        Connection con = null;
+    public void saveLottery(Map<Integer, Object> results) {
+    	sql = "INSERT INTO LOTTERY (USERNO, CATEGORY, CREATEDAT, MODIFEDAT, LOTTERY1, LOTTERY2, LOTTERY3, LOTTERY4, LOTTERY5, LOTTERY6, STATUS) VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 'Y')";
+    	Connection con = null;
         CallableStatement cstmt = null;
 
         try {
@@ -68,9 +68,9 @@ public class LotteryDAO {
         }
     }
     
- // 로또 번호 보여주기
-    public Map<Integer, String[]> ShowLottery() {
-        String sql = "SELECT * FROM LOTTERY";
+    // 로또 번호 보기
+    public Map<Integer, String[]> showLottery() {
+        String sql = "SELECT * FROM LOTTERY ORDER BY LOTTERYNO ASC";
         Connection con = null;
         CallableStatement cstmt = null;
         ResultSet rs = null;
@@ -86,8 +86,7 @@ public class LotteryDAO {
                 int lotteryNo = rs.getInt("LOTTERYNO");
                 int userNo = rs.getInt("USERNO");
                 String createdAt = rs.getString("CREATEDAT");
-                String modifiedAt = rs.getString("MODIFEDAT");
-                int category = rs.getInt("CATEGORY");
+                String category = getCategoryName(rs.getInt("CATEGORY"));
                 String[] numbers = new String[6];
                 numbers[0] = rs.getString("LOTTERY1");
                 numbers[1] = rs.getString("LOTTERY2");
@@ -96,8 +95,9 @@ public class LotteryDAO {
                 numbers[4] = rs.getString("LOTTERY5");
                 numbers[5] = rs.getString("LOTTERY6");
 
-                // 로또 번호와 해당 번호의 모든 정보를 맵에 추가합니다.
-                String[] lotteryInfo = {String.valueOf(userNo), createdAt, modifiedAt, String.valueOf(category), String.valueOf(numbers)};
+                
+                // 로또 번호와 해당 번호의 모든 정보를 맵에 추가
+                String[] lotteryInfo = {String.valueOf(userNo), createdAt, category, String.join(", ", numbers)};
                 lotteryResults.put(lotteryNo, lotteryInfo);
             }
             System.out.println("복권 번호 전달 완료");
@@ -119,9 +119,46 @@ public class LotteryDAO {
                 e.printStackTrace();
             }
         }
-        // System.out.println(lotteryMap);
         return lotteryResults;
     }
 
 
+    // 로또 번호 삭제
+    public void deleteLottery(int lotteryNo) {
+        String sql = "DELETE FROM LOTTERY WHERE LOTTERYNO = ?";
+    	Connection con = null;
+        CallableStatement cstmt = null;
+
+        try {
+            con = cp.getConnection();
+            cstmt = con.prepareCall(sql);
+            cstmt.setInt(1, lotteryNo);
+            cstmt.execute();
+            System.out.println(lotteryNo + "복권 번호 삭제 완료");
+        } catch (Exception e) {
+            System.out.println("프로시저 호출 실패: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (cstmt != null) {
+                    cstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private String getCategoryName(int index) {
+    	if (index == 0) {
+    		return "자동";
+    	} else if (index == 1) {
+    		return "반자동";
+    	} else {
+    		return "수동";
+    	}
+    }
 }
