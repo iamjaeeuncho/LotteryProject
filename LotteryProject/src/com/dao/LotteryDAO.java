@@ -4,11 +4,15 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.ConnectionPool;
+
+import oracle.jdbc.OracleTypes;
 
 public class LotteryDAO {
   
@@ -16,7 +20,7 @@ public class LotteryDAO {
     public void saveLottery(Map<Integer, Object> results) {
         
         try (Connection con = ConnectionPool.getConnection();
-				CallableStatement cstmt = con.prepareCall("INSERT INTO LOTTERY (USERNO, CATEGORY, CREATEDAT, MODIFEDAT, LOTTERY1, LOTTERY2, LOTTERY3, LOTTERY4, LOTTERY5, LOTTERY6, STATUS) VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 'Y')")){
+				CallableStatement cstmt = con.prepareCall("{call INSERT_LOTTERY(1, ?, ?, ?, ?, ?, ?, ?) }")){
         	
             for (Entry<Integer, Object> result : results.entrySet()) {
                 String[] values = (String[]) result.getValue();
@@ -50,32 +54,39 @@ public class LotteryDAO {
         }
     }
     
-    // 로또 번호 보기
-    public Map<Integer, String[]> showLottery() {
+ // 로또 번호 반환
+    public Map<Integer, String[]> showLottery(String userNo) {
         ResultSet rs = null;
-
         Map<Integer, String[]> lotteryResults = new HashMap<>();
 
         try (Connection con = ConnectionPool.getConnection();
-				CallableStatement cstmt = con.prepareCall("SELECT * FROM LOTTERY ORDER BY LOTTERYNO ASC")){
-            rs = cstmt.executeQuery();
+            CallableStatement cstmt = con.prepareCall("{call SHOW_LOTTERY(?, ?)}")) {
+            cstmt.setInt(1, Integer.parseInt(userNo)); // p_userno 설정
 
+            // OUT 매개변수를 등록합니다.
+            cstmt.registerOutParameter(2, OracleTypes.CURSOR); // lotteryList
+
+            cstmt.execute(); // 프로시저 실행
+
+            rs = (ResultSet) cstmt.getObject(2); // 결과 세트 가져오기
+                
+            // 결과 처리
             while (rs.next()) {
                 int lotteryNo = rs.getInt("LOTTERYNO");
-                int userNo = rs.getInt("USERNO");
-                String createdAt = rs.getString("CREATEDAT");
-                String category = getCategoryName(rs.getInt("CATEGORY"));
-                String[] numbers = new String[6];
-                numbers[0] = rs.getString("LOTTERY1");
-                numbers[1] = rs.getString("LOTTERY2");
-                numbers[2] = rs.getString("LOTTERY3");
-                numbers[3] = rs.getString("LOTTERY4");
-                numbers[4] = rs.getString("LOTTERY5");
-                numbers[5] = rs.getString("LOTTERY6");
+                Timestamp createdAt = rs.getTimestamp("CREATEDAT");
+                int category = rs.getInt("CATEGORY");
+                int lottery1 = rs.getInt("LOTTERY1");
+                int lottery2 = rs.getInt("LOTTERY2");
+                int lottery3 = rs.getInt("LOTTERY3");
+                int lottery4 = rs.getInt("LOTTERY4");
+                int lottery5 = rs.getInt("LOTTERY5");
+                int lottery6 = rs.getInt("LOTTERY6");
+                String status = rs.getString("STATUS");
 
-                
                 // 로또 번호와 해당 번호의 모든 정보를 맵에 추가
-                String[] lotteryInfo = {String.valueOf(userNo), createdAt, category, String.join(", ", numbers)};
+                String[] lotteryInfo = { String.valueOf(userNo), String.valueOf(createdAt), getCategoryName(category),
+                        String.join(", ", String.valueOf(lottery1), String.valueOf(lottery2), String.valueOf(lottery3),
+                                String.valueOf(lottery4), String.valueOf(lottery5), String.valueOf(lottery6)) };
                 lotteryResults.put(lotteryNo, lotteryInfo);
             }
             System.out.println("복권 번호 전달 완료");
@@ -86,10 +97,11 @@ public class LotteryDAO {
         return lotteryResults;
     }
 
+
     // 로또 번호 삭제
     public void deleteLottery(int lotteryNo) {
         try (Connection con = ConnectionPool.getConnection();
-				CallableStatement cstmt = con.prepareCall("DELETE FROM LOTTERY WHERE LOTTERYNO = ?")){
+				CallableStatement cstmt = con.prepareCall("{call DELETE_LOTTERY(?)}")){
         	
             cstmt.setInt(1, lotteryNo);
             cstmt.execute();

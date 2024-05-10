@@ -1,4 +1,5 @@
 package com;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,7 +20,7 @@ import javax.swing.SwingUtilities;
 import com.dao.LotteryDAO;
 import com.dto.LotteryVO;
 
-public class MyPage {
+public class MyPage extends JPanel {
 	
 	LotteryDAO lotteryDao = new LotteryDAO();
 	LotteryVO lotteryVo = new LotteryVO();
@@ -27,7 +28,6 @@ public class MyPage {
 	private final int ROWS = 5;
     private final int COLS = 3;
     
-    private Map<Integer, String[]> lotteryResults = lotteryDao.showLottery();
     private int lotteryNo;
     private String[] lotteryInfo;
     private String userNo;
@@ -35,24 +35,28 @@ public class MyPage {
     private String category;
     private String numbers;
     
+    private Map<Integer, String[]> lotteryResults;
+    
     public MyPage() {
-    	JFrame frame = new JFrame();
-        frame.setSize(1000, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+    	setSize(700, 500);
+        setVisible(true);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
+        userNo = "1";
+        lotteryResults = lotteryDao.showLottery(userNo);
         // 1. 메뉴바
         JPanel menuPanel = new JPanel();        
         JLabel menuLabel = new JLabel("번호 생성 내역", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(1000, 50));
+        menuPanel.setPreferredSize(new Dimension(700, 50));
         menuPanel.add(menuLabel);
         
         // 2. 번호 생성 내역 테이블
         JPanel tablePanel = new JPanel();
-        tablePanel.setPreferredSize(new Dimension(1000, 400));
+        tablePanel.setPreferredSize(new Dimension(700, 400));
         
         for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
         	JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
-        	entryPanel.setPreferredSize(new Dimension(1000, 30));
+        	entryPanel.setPreferredSize(new Dimension(700, 30));
         	entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         	
         	lotteryNo = entry.getKey();
@@ -62,8 +66,7 @@ public class MyPage {
             numbers = lotteryInfo[3];
             createdAt = lotteryInfo[1];
             createdAt = createdAt.substring(0, createdAt.length() - 7);
-            
-            
+
             // 복권 고유 번호 
             JPanel lotteryNoPanel = new JPanel();
             JLabel lotteryNoLabel = new JLabel(String.valueOf(lotteryNo), SwingConstants.CENTER);
@@ -98,7 +101,7 @@ public class MyPage {
             deleteLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                	// 해당 복권 번호 가져오기
+                    // 해당 복권 번호 가져오기
                     JPanel parentPanel = (JPanel) deleteLabel.getParent().getParent();
                     // entryPanel의 첫 번째 자식 컴포넌트인 lotteryNoPanel에서 JLabel을 가져옴
                     JPanel entryPanel = (JPanel) parentPanel.getComponent(0);
@@ -108,23 +111,21 @@ public class MyPage {
 
                     // DB에서 해당 복권 번호로 삭제
                     lotteryDao.deleteLottery(lotteryNo);
-                    
+
                     // entryPanel 제거
                     parentPanel.getParent().remove(parentPanel);
-                    
-                    // 화면 갱신
-                    frame.revalidate();
-                    frame.repaint();
+                    // 컴포넌트 제거 후 다시 그리기
+                    revalidate();
+                    repaint();
                 }
             });            
             deletePanel.add(deleteLabel);
             entryPanel.add(deletePanel);
+
             
             tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
         }
 
-
-        
         // 3. 회원 탈퇴 버튼
         JPanel buttonPanel = new JPanel();
         JLabel deleteLabel = new JLabel("회원 탈퇴", SwingConstants.CENTER);
@@ -135,21 +136,17 @@ public class MyPage {
             }
         });
         
-        deleteLabel.setPreferredSize(new Dimension(1000, 50));
-        buttonPanel.setPreferredSize(new Dimension(1000, 50));
+        deleteLabel.setPreferredSize(new Dimension(700, 50));
+        buttonPanel.setPreferredSize(new Dimension(700, 50));
         buttonPanel.add(deleteLabel);
 
         // 메인 배치
-        frame.setLayout(new BorderLayout());
-        frame.add(menuPanel, BorderLayout.NORTH);
-        frame.add(tablePanel, BorderLayout.CENTER);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-        frame.setVisible(true);
-    }
-    
-    public static void main(String[] args) {
-    	SwingUtilities.invokeLater(() -> {
-            new MyPage();
-        });
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(menuPanel, BorderLayout.NORTH);
+        mainPanel.add(tablePanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.setVisible(true);
+        
+        add(mainPanel, BorderLayout.CENTER);
     }
 }

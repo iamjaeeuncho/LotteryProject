@@ -49,7 +49,6 @@ public class Lottery extends JPanel {
     private JLabel[][] resultLabels;
 
     public Lottery() {
-        setBackground(Color.WHITE);
         setSize(700, 500);
         setVisible(true);
         JPanel mainPanel = new JPanel(new BorderLayout());

@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 public class Category extends JFrame {
     int userNo;
     JButton lottery;
+    JButton myPage;    
     JButton chat;
     JButton login;
     JPanel panel = new JPanel();
@@ -25,7 +26,7 @@ public class Category extends JFrame {
         chat.setPreferredSize(new Dimension(230, 60));
         chat.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
         
-        JButton myPage = new JButton("내 정보");
+        myPage = new JButton("내 정보");
         myPage.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
         myPage.setPreferredSize(new Dimension(230, 60));
         
