@@ -46,14 +46,14 @@ public class Main extends JFrame {
     private class Lsistener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton but = (JButton) e.getSource();
-            if (but == category.login) {
+            JButton button = (JButton) e.getSource();
+            if (button == category.login) {
                 removeCurrentPanel();
                 JPanel panel = new JPanel();
                 panel.add(new Login(Main.this));
                 add("Center", panel);
                 currentPanel = panel;
-            } else if (but == category.chat) {
+            } else if (button == category.chat) {
                 removeCurrentPanel();
                 chat = new Chat(userNo);
                 add("Center", chat);

@@ -46,10 +46,4 @@ public class ChattingServer {
         }
     }
 
-//    // 서버가 재가동될 때 기존 채팅방 정보를 읽어오는 메서드
-//    private static void loadChatRooms() {
-//        // 데이터베이스나 파일 시스템 등에서 채팅방 정보를 읽어와서 처리하는 로직 구현
-//    	ChatDAO cdao = new ChatDAO();
-//        List<ChatVO> chatList = cdao.chatList();
-//    }
 }
