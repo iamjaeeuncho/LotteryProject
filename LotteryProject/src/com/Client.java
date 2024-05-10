@@ -57,15 +57,17 @@ public class Client extends JFrame {
         });
     }
     
-    public Client(int userNo,String userName,int chatNo) {
+    public Client(int userNo, String userName, int chatNo) {
         this.userNo = userNo;
-        this.userName=userName;
+        this.userName = userName;
         this.chatNo = chatNo;
+        System.out.println("어디서 에러1"+userNo+userName+chatNo);
         initializeUI();
+        loadMessages();
     }
 
     public Client() {
-        initializeUI();
+//        initializeUI();
     }
 
     public void initializeUI() {
@@ -82,13 +84,9 @@ public class Client extends JFrame {
         
         // JTextArea를 JScrollPane에 추가
         textArea = new JTextArea();
+        textArea.setEditable(false); // 수정 불가능하도록 설정
         textArea.setFont(new Font("SansSerif", Font.PLAIN, 20)); // 글꼴 크기 설정
         scrollPane.setViewportView(textArea);
-        
-        List<MessageVO> measList = cdao.mesgList(chatNo);
-        for (int i = 0; i < measList.size(); i++) {
-            textArea.append(measList.get(i).userName + ":" + measList.get(i).content + "\n");
-        }
         
         JButton btnNewButton = new JButton("전송");
         btnNewButton.setBounds(538, 431, 95, 39);
@@ -119,11 +117,10 @@ public class Client extends JFrame {
 
     private void setupNetworking() {
         try {
-            socket = new Socket("192.168.230.39", 1000);
+            socket = new Socket("192.168.230.39", 9999);
             OutputStream os = socket.getOutputStream();
             bw = new BufferedWriter(new OutputStreamWriter(os));
             prinWrite = new PrintWriter(bw, true);
-            System.out.println("소켓"+userName);
             prinWrite.println(userName);
 
             InputStream is = socket.getInputStream();
@@ -154,10 +151,20 @@ public class Client extends JFrame {
         }
     }
 
+    private void loadMessages() {
+        textArea.setText(""); // 기존 메시지를 모두 지움
+        List<MessageVO> mesgList = cdao.mesgList(chatNo);
+        for (int i = 0; i < mesgList.size(); i++) {
+            textArea.append(mesgList.get(i).userName + ": " + mesgList.get(i).content + "\n");
+        }
+    }
+
     private void sendMessage() {
         if (!textField.getText().isEmpty()) {
+        	System.out.println("sendMessage"+chatNo+userName);
             cdao.saveChat(userNo, textField.getText(), chatNo);
-            prinWrite.println(userName + ":" + textField.getText());
+            System.out.println(userNo + textField.getText() + chatNo);
+            prinWrite.println(userName + ": " + textField.getText());
             textField.setText("");
         }
     }

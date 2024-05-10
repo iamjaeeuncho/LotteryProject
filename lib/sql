@@ -60,6 +60,7 @@ END;
 CREATE OR REPLACE PACKAGE CHAT_PAK AS
   PROCEDURE ADD_PROD(p_userNo IN chat.userno%type, chatName IN chat.chatname%type);
   PROCEDURE CHATLIST_PROD(chatList OUT SYS_REFCURSOR);
+  PROCEDURE CHATROOMDEL_PROD(p_chatNo IN chat.chatno%type);
 END CHAT_PAK;
 /
 
@@ -72,11 +73,19 @@ CREATE OR REPLACE PACKAGE BODY CHAT_PAK AS
   
   PROCEDURE CHATLIST_PROD(chatList OUT SYS_REFCURSOR) IS
   BEGIN
-    OPEN chatList FOR SELECT * FROM CHAT ORDER BY chatno;
+    OPEN chatList FOR SELECT * FROM CHAT where status= 'Y' ORDER BY chatno;
   END CHATLIST_PROD;
+  
+  PROCEDURE CHATROOMDEL_PROD(p_chatNo IN chat.chatno%type) IS
+  BEGIN
+    UPDATE chat
+    set status='N'
+    where chatno=p_chatNo;
+  END CHATROOMDEL_PROD;
   
 END CHAT_PAK;
 /
+
 
 
 --메세지 패키지

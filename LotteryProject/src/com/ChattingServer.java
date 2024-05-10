@@ -15,7 +15,7 @@ public class ChattingServer {
 
     public static void main(String[] args) {
         try {
-            serverSocket = new ServerSocket(1000);
+            serverSocket = new ServerSocket(9999);
             System.out.println("서버 실행 중");
 
             // 기존에 생성된 채팅방 정보를 읽어올 수 있는 로직 구현
