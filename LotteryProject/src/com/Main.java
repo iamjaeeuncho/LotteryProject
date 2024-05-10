@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 
 public class Main extends JFrame {
-	private Lottery lottery;
+//	private Lottery lottery;
     private JPanel currentPanel;
     private Category category;
     private Chat chat;
@@ -53,9 +53,9 @@ public class Main extends JFrame {
             
             if (but == category.lottery) {
                 removeCurrentPanel();
-                Lottery lotteryPanel = new Lottery();
-                add("Center", lotteryPanel);
-                currentPanel = lotteryPanel;
+//                Lottery lotteryPanel = new Lottery();
+//                add("Center", lotteryPanel);
+//                currentPanel = lotteryPanel;
                     
             } else if (but == category.login) {
                 removeCurrentPanel();

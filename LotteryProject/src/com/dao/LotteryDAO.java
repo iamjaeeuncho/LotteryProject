@@ -11,19 +11,13 @@ import java.util.Map.Entry;
 import com.ConnectionPool;
 
 public class LotteryDAO {
-    private ConnectionPool cp = ConnectionPool.getInstance("jdbc:oracle:thin:@localhost:1521/xepdb1", "lottery", "lottery", 5, 10);
-    private String sql;
-
+  
     // 로또 번호 저장
     public void saveLottery(Map<Integer, Object> results) {
-    	sql = "INSERT INTO LOTTERY (USERNO, CATEGORY, CREATEDAT, MODIFEDAT, LOTTERY1, LOTTERY2, LOTTERY3, LOTTERY4, LOTTERY5, LOTTERY6, STATUS) VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 'Y')";
-    	Connection con = null;
-        CallableStatement cstmt = null;
-
-        try {
-            con = cp.getConnection();
-            cstmt = con.prepareCall(sql);
-
+        
+        try (Connection con = ConnectionPool.getConnection();
+				CallableStatement cstmt = con.prepareCall("INSERT INTO LOTTERY (USERNO, CATEGORY, CREATEDAT, MODIFEDAT, LOTTERY1, LOTTERY2, LOTTERY3, LOTTERY4, LOTTERY5, LOTTERY6, STATUS) VALUES (1, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 'Y')")){
+        	
             for (Entry<Integer, Object> result : results.entrySet()) {
                 String[] values = (String[]) result.getValue();
 
@@ -43,7 +37,6 @@ public class LotteryDAO {
                 String numbers = values[1].substring(1, values[1].length() - 1); // 대괄호 제거
                 String[] numberArray = numbers.split(", "); // 쉼표(,)를 기준으로 문자열 분할
 
-                
                 int sqlColumnIndex = 2;
                 for (String num : numberArray) {
             		cstmt.setInt(sqlColumnIndex++, Integer.parseInt(num));
@@ -54,32 +47,17 @@ public class LotteryDAO {
         } catch (Exception e) {
             System.out.println("프로시저 호출 실패: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            try {
-                if (cstmt != null) {
-                    cstmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
     
     // 로또 번호 보기
     public Map<Integer, String[]> showLottery() {
-        String sql = "SELECT * FROM LOTTERY ORDER BY LOTTERYNO ASC";
-        Connection con = null;
-        CallableStatement cstmt = null;
         ResultSet rs = null;
 
         Map<Integer, String[]> lotteryResults = new HashMap<>();
 
-        try {
-            con = cp.getConnection();
-            cstmt = con.prepareCall(sql);
+        try (Connection con = ConnectionPool.getConnection();
+				CallableStatement cstmt = con.prepareCall("SELECT * FROM LOTTERY ORDER BY LOTTERYNO ASC")){
             rs = cstmt.executeQuery();
 
             while (rs.next()) {
@@ -104,51 +82,22 @@ public class LotteryDAO {
         } catch (Exception e) {
             System.out.println("프로시저 호출 실패: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (cstmt != null) {
-                    cstmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return lotteryResults;
     }
 
-
     // 로또 번호 삭제
     public void deleteLottery(int lotteryNo) {
-        String sql = "DELETE FROM LOTTERY WHERE LOTTERYNO = ?";
-    	Connection con = null;
-        CallableStatement cstmt = null;
-
-        try {
-            con = cp.getConnection();
-            cstmt = con.prepareCall(sql);
+        try (Connection con = ConnectionPool.getConnection();
+				CallableStatement cstmt = con.prepareCall("DELETE FROM LOTTERY WHERE LOTTERYNO = ?")){
+        	
             cstmt.setInt(1, lotteryNo);
             cstmt.execute();
             System.out.println(lotteryNo + "복권 번호 삭제 완료");
+            
         } catch (Exception e) {
             System.out.println("프로시저 호출 실패: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            try {
-                if (cstmt != null) {
-                    cstmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
     

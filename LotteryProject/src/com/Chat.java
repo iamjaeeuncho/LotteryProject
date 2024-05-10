@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -49,7 +50,12 @@ public class Chat extends JPanel {
 	            if (userNo > 0) {
 	                String title = JOptionPane.showInputDialog("채팅방 제목을 입력하세요");
 	                System.out.println("여깅"+userNo);
-	                cdao.addChat(userNo, title);
+	                try {
+						cdao.addChat(userNo, title);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 	                refreshChatList();
 	            } else {
 	                JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
