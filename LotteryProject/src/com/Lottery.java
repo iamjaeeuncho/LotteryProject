@@ -115,7 +115,6 @@ public class Lottery extends JPanel {
                     numberPanels[i][j].add(emptyLabel);
                     numberPanels[i][j].setEnabled(false);
                 }
-                
                 numberPanel.add(numberPanels[i][j]);
                 num++;
             }
@@ -326,10 +325,6 @@ public class Lottery extends JPanel {
         for (int i = 1; i <= 45; i++) {
             randomNumbers.add(i);
         }
-        
-//		if (!resultLabels[RESULT_ROWS][0].getText().equals("")) {
-//			JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최소 1개가 있어야 발급 가능합니다");
-//		}
 
         // 카테고리 미선택시
         if (selectedIndex == -1) {
@@ -391,7 +386,7 @@ public class Lottery extends JPanel {
                 break;
             }
         }
-
+        
         resetCategory(); // 초기화
         resetNumbers();
     }
@@ -416,10 +411,6 @@ public class Lottery extends JPanel {
         return result;
     }
     
-    private void WeightedRandom() {
-    	
-    }
-    
     private void modifyLottery(int rowIndex) {
     	String category = resultLabels[rowIndex][0].getText();
     	if (category.equals("자동")) {
@@ -429,7 +420,6 @@ public class Lottery extends JPanel {
     	} else if (category.equals("수동")) {
     		toggleCategory(2);
     	}
-    	
     	selectedNumbers.clear();
     	
     	for (int i = 0; i < NUMBER_ROWS; i++) {
