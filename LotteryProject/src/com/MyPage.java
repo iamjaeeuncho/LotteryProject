@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -21,45 +22,51 @@ import com.dao.LotteryDAO;
 import com.dto.LotteryVO;
 
 public class MyPage extends JPanel {
-	
-	LotteryDAO lotteryDao = new LotteryDAO();
-	LotteryVO lotteryVo = new LotteryVO();
-	
-	private final int ROWS = 5;
+
+    LotteryDAO lotteryDao = new LotteryDAO();
+    LotteryVO lotteryVo = new LotteryVO();
+
+    private final int ROWS = 5;
     private final int COLS = 3;
-    
+
     private int lotteryNo;
     private String[] lotteryInfo;
     private String userNo;
     private String createdAt;
     private String category;
     private String numbers;
-    
+
     private Map<Integer, String[]> lotteryResults;
-    
+
     public MyPage() {
-    	setSize(700, 500);
+        setSize(1000, 500);
         setVisible(true);
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         userNo = "1";
         lotteryResults = lotteryDao.showLottery(userNo);
         // 1. 메뉴바
-        JPanel menuPanel = new JPanel();        
+        JPanel menuPanel = new JPanel();
         JLabel menuLabel = new JLabel("번호 생성 내역", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(700, 50));
+        menuPanel.setBackground(Color.WHITE);
+        menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        menuPanel.setPreferredSize(new Dimension(1000, 50));
         menuPanel.add(menuLabel);
-        
+
         // 2. 번호 생성 내역 테이블
         JPanel tablePanel = new JPanel();
-        tablePanel.setPreferredSize(new Dimension(700, 400));
-        
+        tablePanel.setLayout(new GridLayout(0, 1));
+        tablePanel.setPreferredSize(new Dimension(1000, 400));
+
+        JScrollPane tableScrollPane = new JScrollPane(tablePanel);
+        tableScrollPane.setPreferredSize(new Dimension(900, 400));
+        tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
-        	JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
-        	entryPanel.setPreferredSize(new Dimension(700, 30));
-        	entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        	
-        	lotteryNo = entry.getKey();
+            JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
+            entryPanel.setPreferredSize(new Dimension(1000, 50));
+
+            lotteryNo = entry.getKey();
             lotteryInfo = entry.getValue();
             userNo = lotteryInfo[0];
             category = lotteryInfo[2];
@@ -67,34 +74,34 @@ public class MyPage extends JPanel {
             createdAt = lotteryInfo[1];
             createdAt = createdAt.substring(0, createdAt.length() - 7);
 
-            // 복권 고유 번호 
+            // 복권 고유 번호
             JPanel lotteryNoPanel = new JPanel();
             JLabel lotteryNoLabel = new JLabel(String.valueOf(lotteryNo), SwingConstants.CENTER);
             lotteryNoPanel.setPreferredSize(new Dimension(10, 10));
             lotteryNoPanel.add(lotteryNoLabel);
             entryPanel.add(lotteryNoPanel);
-            
+
             // 복권 생성일
             JPanel createdPanel = new JPanel();
             JLabel createdLabel = new JLabel(createdAt, SwingConstants.CENTER);
             createdPanel.setPreferredSize(new Dimension(10, 10));
             createdPanel.add(createdLabel);
             entryPanel.add(createdPanel);
-            
+
             // 카테고리
             JPanel categoryPanel = new JPanel();
             JLabel categoryLabel = new JLabel(category, SwingConstants.CENTER);
             categoryPanel.setPreferredSize(new Dimension(30, 10));
             categoryPanel.add(categoryLabel);
             entryPanel.add(categoryPanel);
-            
+
             // 번호
             JPanel numbersPanel = new JPanel();
             JLabel numbersLabel = new JLabel(numbers, SwingConstants.CENTER);
             numbersPanel.setPreferredSize(new Dimension(50, 10));
             numbersPanel.add(numbersLabel);
             entryPanel.add(numbersPanel);
-            
+
             // 삭제 라벨
             JPanel deletePanel = new JPanel();
             JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
@@ -118,11 +125,10 @@ public class MyPage extends JPanel {
                     revalidate();
                     repaint();
                 }
-            });            
+            });
             deletePanel.add(deleteLabel);
             entryPanel.add(deletePanel);
 
-            
             tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
         }
 
@@ -135,7 +141,7 @@ public class MyPage extends JPanel {
 //            	lotteryDao.ShowLottery();
             }
         });
-        
+
         deleteLabel.setPreferredSize(new Dimension(700, 50));
         buttonPanel.setPreferredSize(new Dimension(700, 50));
         buttonPanel.add(deleteLabel);
@@ -143,10 +149,10 @@ public class MyPage extends JPanel {
         // 메인 배치
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(menuPanel, BorderLayout.NORTH);
-        mainPanel.add(tablePanel, BorderLayout.CENTER);
+        mainPanel.add(tableScrollPane, BorderLayout.CENTER); // Replace tablePanel with tableScrollPane
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.setVisible(true);
-        
+
         add(mainPanel, BorderLayout.CENTER);
     }
 }
