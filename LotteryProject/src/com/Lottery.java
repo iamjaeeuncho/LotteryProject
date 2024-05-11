@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -27,6 +28,7 @@ public class Lottery extends JPanel {
 	
 	LotteryDAO lotteryDao = new LotteryDAO();
 	LotteryVO lotteryVo = new LotteryVO();
+	WeightedRandom weightedRandom = new WeightedRandom();
 	
     private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
@@ -318,7 +320,7 @@ public class Lottery extends JPanel {
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
     
- // 선택된 카테고리와 숫자 출력
+    // 선택된 카테고리와 숫자 출력
     private void selectLottery() {
         // 1부터 45까지의 숫자가 담긴 리스트 생성
         ArrayList<Integer> randomNumbers = new ArrayList<>();
@@ -334,9 +336,10 @@ public class Lottery extends JPanel {
 
         // 자동 카테고리: 무작위로 6개의 숫자 선택
         if (selectedIndex == 0) {
-            Random random = new Random();
-            for (int i = 0; i < 6; i++) {
-                int index = random.nextInt(randomNumbers.size());
+        	List<Integer> random = weightedRandom.selectNumbers();
+        	
+            for (int i = 0; i < random.size(); i++) {
+                int index = random.get(i);
                 selectedNumbers.add(randomNumbers.get(index));
                 randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
             }
@@ -386,7 +389,6 @@ public class Lottery extends JPanel {
                 break;
             }
         }
-        
         resetCategory(); // 초기화
         resetNumbers();
     }
