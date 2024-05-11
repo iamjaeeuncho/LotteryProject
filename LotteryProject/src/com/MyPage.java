@@ -38,12 +38,11 @@ public class MyPage extends JPanel {
 
     private Map<Integer, String[]> lotteryResults;
 
-    public MyPage() {
+    public MyPage(int userNo) {
         setSize(1000, 500);
         setVisible(true);
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        userNo = "1";
         lotteryResults = lotteryDao.showLottery(userNo);
         // 1. 메뉴바
         JPanel menuPanel = new JPanel();
@@ -68,7 +67,7 @@ public class MyPage extends JPanel {
 
             lotteryNo = entry.getKey();
             lotteryInfo = entry.getValue();
-            userNo = lotteryInfo[0];
+            userNo = Integer.parseInt(lotteryInfo[0]);
             category = lotteryInfo[2];
             numbers = lotteryInfo[3];
             createdAt = lotteryInfo[1];

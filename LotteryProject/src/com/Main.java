@@ -27,9 +27,9 @@ public class Main extends JFrame {
         category = new Category();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("가슴속에 복권 한장");
-        setSize(1400, 600);
+        setSize(1100, 650);
         setLayout(new BorderLayout());
-        add("North", category.panel);
+        add("North", category.mainPanel);
 
         JButton loginBtn = category.login;
         JButton chatBtn = category.chat;
@@ -54,12 +54,12 @@ public class Main extends JFrame {
             
             if (btn == category.lottery) {
                 removeCurrentPanel();
-                Lottery lotteryPanel = new Lottery();
+                Lottery lotteryPanel = new Lottery(userNo);
                 add("Center", lotteryPanel);
                 currentPanel = lotteryPanel;
             } else if (btn == category.myPage) {
                 removeCurrentPanel();
-                MyPage myPagePanel = new MyPage();
+                MyPage myPagePanel = new MyPage(userNo);
                 add("Center", myPagePanel);
                 currentPanel = myPagePanel;
             } else if (btn == category.login) {

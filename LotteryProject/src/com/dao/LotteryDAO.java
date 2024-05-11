@@ -17,10 +17,12 @@ import oracle.jdbc.OracleTypes;
 public class LotteryDAO {
   
     // 로또 번호 저장
-    public void saveLottery(Map<Integer, Object> results) {
+    public void saveLottery(int userNo, Map<Integer, Object> results) {
         
         try (Connection con = ConnectionPool.getConnection();
-				CallableStatement cstmt = con.prepareCall("{call INSERT_LOTTERY(1, ?, ?, ?, ?, ?, ?, ?) }")){
+			CallableStatement cstmt = con.prepareCall("{call INSERT_LOTTERY(?, ?, ?, ?, ?, ?, ?, ?) }")){
+        	
+        	cstmt.setInt(1, userNo);
         	
             for (Entry<Integer, Object> result : results.entrySet()) {
                 String[] values = (String[]) result.getValue();
@@ -29,19 +31,19 @@ public class LotteryDAO {
                 int categoryNum;
                 if (category.equals("자동")) {
                 	categoryNum = 1;
-                	cstmt.setInt(1, categoryNum);
+                	cstmt.setInt(2, categoryNum);
                 } else if (category.equals("반자동")) {
                 	categoryNum = 2;
-                	cstmt.setInt(1, categoryNum);
+                	cstmt.setInt(2, categoryNum);
                 } else if (category.equals("수동")) {
                 	categoryNum = 3;
-                	cstmt.setInt(1, categoryNum);
+                	cstmt.setInt(2, categoryNum);
                 }
 
                 String numbers = values[1].substring(1, values[1].length() - 1); // 대괄호 제거
                 String[] numberArray = numbers.split(", "); // 쉼표(,)를 기준으로 문자열 분할
 
-                int sqlColumnIndex = 2;
+                int sqlColumnIndex = 3;
                 for (String num : numberArray) {
             		cstmt.setInt(sqlColumnIndex++, Integer.parseInt(num));
                 }
@@ -55,13 +57,13 @@ public class LotteryDAO {
     }
     
  // 로또 번호 반환
-    public Map<Integer, String[]> showLottery(String userNo) {
+    public Map<Integer, String[]> showLottery(int userNo) {
         ResultSet rs = null;
         Map<Integer, String[]> lotteryResults = new HashMap<>();
 
         try (Connection con = ConnectionPool.getConnection();
             CallableStatement cstmt = con.prepareCall("{call SHOW_LOTTERY(?, ?)}")) {
-            cstmt.setInt(1, Integer.parseInt(userNo)); // p_userno 설정
+            cstmt.setInt(1, userNo); // p_userno 설정
 
             // OUT 매개변수를 등록합니다.
             cstmt.registerOutParameter(2, OracleTypes.CURSOR); // lotteryList

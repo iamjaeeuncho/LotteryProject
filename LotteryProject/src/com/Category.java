@@ -8,13 +8,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Category extends JFrame {
+public class Category extends JPanel {
     int userNo;
     JButton lottery;
     JButton myPage;    
     JButton chat;
     JButton login;
-    JPanel panel = new JPanel();
+    JPanel mainPanel = new JPanel();
     
     public Category() {
 
@@ -41,11 +41,11 @@ public class Category extends JFrame {
             login.setPreferredSize(new Dimension(230, 60));
         }
         
-        panel.setLayout(new FlowLayout());
-        panel.add(lottery);
-        panel.add(myPage);
-        panel.add(chat);
-        panel.add(login);
+        mainPanel.setLayout(new FlowLayout());
+        mainPanel.add(lottery);
+        mainPanel.add(myPage);
+        mainPanel.add(chat);
+        mainPanel.add(login);
     }
     public int getUserNo() {
         return userNo;

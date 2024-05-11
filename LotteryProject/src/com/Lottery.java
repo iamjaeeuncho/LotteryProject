@@ -26,6 +26,8 @@ import com.dto.LotteryVO;
 
 public class Lottery extends JPanel {
 	
+	int userNo;
+	
 	LotteryDAO lotteryDao = new LotteryDAO();
 	LotteryVO lotteryVo = new LotteryVO();
 	WeightedRandom weightedRandom = new WeightedRandom();
@@ -50,8 +52,8 @@ public class Lottery extends JPanel {
     
     private JLabel[][] resultLabels;
 
-    public Lottery() {
-        setSize(700, 500);
+    public Lottery(int userNo) {
+        setSize(1000, 500);
         setVisible(true);
         JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -88,7 +90,7 @@ public class Lottery extends JPanel {
         selectedNumbers = new ArrayList<Integer>();
 
         JPanel numberPanel = new JPanel(new GridLayout(NUMBER_ROWS, NUMBER_COLS));
-        numberPanel.setPreferredSize(new Dimension(400, 300));
+        numberPanel.setPreferredSize(new Dimension(400, 400));
         
         int num = 1;
         for (int i = 0; i < NUMBER_ROWS; i++) {
@@ -140,7 +142,7 @@ public class Lottery extends JPanel {
 
         // 왼쪽 사이드
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setPreferredSize(new Dimension(400, 400));
+        inputPanel.setPreferredSize(new Dimension(400, 500));
         inputPanel.add(categoryPanel, BorderLayout.NORTH);
         inputPanel.add(numberPanel, BorderLayout.CENTER);
         inputPanel.add(confirmPanel, BorderLayout.SOUTH);
@@ -149,7 +151,7 @@ public class Lottery extends JPanel {
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridLayout(1, 1));
         JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(700, 50));
+        menuPanel.setPreferredSize(new Dimension(600, 50));
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         menuPanel.add(menuLabel);
@@ -160,7 +162,7 @@ public class Lottery extends JPanel {
         savedNumbers = new ArrayList<Integer>();
 
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
-        resultPanel.setPreferredSize(new Dimension(700, 500));
+        resultPanel.setPreferredSize(new Dimension(600, 400));
 
         String value = "";
         resultLabels = new JLabel[RESULT_ROWS][RESULT_COLS];
@@ -182,7 +184,7 @@ public class Lottery extends JPanel {
 
                     // 수정 버튼
                     JLabel modifyLabel = new JLabel("수정", SwingConstants.CENTER);
-                    modifyLabel.setPreferredSize(new Dimension(60, 30));
+                    modifyLabel.setPreferredSize(new Dimension(50, 30));
                     modifyLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -192,7 +194,7 @@ public class Lottery extends JPanel {
 
                     // 삭제 버튼
                     JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
-                    deleteLabel.setPreferredSize(new Dimension(60, 30));
+                    deleteLabel.setPreferredSize(new Dimension(50, 30));
                     deleteLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -213,7 +215,7 @@ public class Lottery extends JPanel {
 
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new GridBagLayout());
-        registerPanel.setPreferredSize(new Dimension(700, 50));
+        registerPanel.setPreferredSize(new Dimension(600, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
         registerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -222,14 +224,14 @@ public class Lottery extends JPanel {
         registerLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                lotteryDao.saveLottery(saveLottery());
+                lotteryDao.saveLottery(userNo, saveLottery());
             }
         });
         registerPanel.add(registerLabel);
 
         // 오른쪽 사이드
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setPreferredSize(new Dimension(700, 400));
+        outputPanel.setPreferredSize(new Dimension(600, 500));
         outputPanel.add(menuPanel, BorderLayout.NORTH);
         outputPanel.add(resultPanel, BorderLayout.CENTER);
         outputPanel.add(registerPanel, BorderLayout.SOUTH);
