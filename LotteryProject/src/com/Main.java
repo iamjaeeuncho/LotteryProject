@@ -81,7 +81,7 @@ public class Main extends JFrame {
         }
     }
 
-    private void removeCurrentPanel() {
+    void removeCurrentPanel() {
         if (currentPanel != null) {
             remove(currentPanel);
         }

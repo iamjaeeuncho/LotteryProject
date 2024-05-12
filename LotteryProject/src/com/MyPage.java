@@ -74,6 +74,7 @@ public class MyPage extends JPanel {
         	for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
         		JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
         		entryPanel.setPreferredSize(new Dimension(1000, 50));
+        		entryPanel.setBackground(Color.WHITE);
                 
         		lotteryNo = entry.getKey();
         		lotteryInfo = entry.getValue();
@@ -148,6 +149,7 @@ public class MyPage extends JPanel {
         		@Override
         		public void mouseClicked(MouseEvent e) {
             	userDao.deleteUser(userNo);
+            	// 메인 페이지로 돌아가는 코드 추가
         		}
         	});
         	
@@ -158,7 +160,7 @@ public class MyPage extends JPanel {
         	// 메인 배치
         	mainPanel.setLayout(new BorderLayout());
         	mainPanel.add(menuPanel, BorderLayout.NORTH);
-        	mainPanel.add(tableScrollPane, BorderLayout.CENTER); // Replace tablePanel with tableScrollPane
+        	mainPanel.add(tableScrollPane, BorderLayout.CENTER);
         	mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         	mainPanel.setVisible(true);
         }

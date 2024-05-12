@@ -27,7 +27,6 @@ import com.dto.LotteryVO;
 public class Lottery extends JPanel {
 	
 	LotteryDAO lotteryDao = new LotteryDAO();
-	LotteryVO lotteryVo = new LotteryVO();
 	WeightedRandom weightedRandom = new WeightedRandom();
 	
 	int userNo;
@@ -47,9 +46,9 @@ public class Lottery extends JPanel {
 
     private JPanel[][] resultPanels;
     private JLabel[][] resultLabels;
-    private String[][] resultCellValues;
     private final int RESULT_ROWS = 5;
-    private final int RESULT_COLS = 3;    
+    private final int RESULT_COLS = 3;   
+    private boolean allSlotsFilled = true;
 
     public Lottery(int userNo) {
         setSize(1000, 500);
@@ -158,13 +157,12 @@ public class Lottery extends JPanel {
 
         // 2. 결과 출력
         resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
-        resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
         savedNumbers = new ArrayList<Integer>();
 
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
         resultPanel.setPreferredSize(new Dimension(600, 400));
 
-        String value = "";
+        String emptyValue = "";
         resultLabels = new JLabel[RESULT_ROWS][RESULT_COLS];
 
         for (int i = 0; i < RESULT_ROWS; i++) {
@@ -173,8 +171,7 @@ public class Lottery extends JPanel {
                 resultPanels[i][j].setBackground(Color.WHITE);
                 resultPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                resultCellValues[i][j] = value;
-                resultLabels[i][j] = new JLabel(String.valueOf(resultCellValues[i][j]));
+                resultLabels[i][j] = new JLabel(emptyValue);
                 resultPanels[i][j].add(resultLabels[i][j]);
 
                 if (j == 2) {
@@ -330,7 +327,7 @@ public class Lottery extends JPanel {
     }
     
     // 선택된 카테고리와 숫자 출력
-    private void selectLottery(int userNo) {
+    private void selectLottery(int userNo) {    	
         // 1부터 45까지의 숫자가 담긴 리스트 생성
         ArrayList<Integer> randomNumbers = new ArrayList<>();
         for (int i = 1; i <= 45; i++) {
@@ -340,7 +337,7 @@ public class Lottery extends JPanel {
         // 로그인 유저 체크
     	if (userNo == 0) {
             JOptionPane.showMessageDialog(null, "로그인 사용자만 복권 번호 생성이 가능합니다");
-        } else {
+        } else {       	
         	// 카테고리 미선택시
             if (selectedIndex == -1) {
                 JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
@@ -402,8 +399,13 @@ public class Lottery extends JPanel {
                     break;
                 }
             }
+            
+            // 이미 5개의 복권 번호 세트가 존재하면 추가 저장 차단         
+            getResultState();
+
             resetCategory(); // 초기화
             resetNumbers();
+            
         }
     }
 
@@ -425,6 +427,19 @@ public class Lottery extends JPanel {
             result[index++] = num;
         }
         return result;
+    }
+    
+    private void getResultState() {
+    	for (int i = 0; i <= RESULT_ROWS; i++) {
+            if (resultLabels[i][1].getText().isEmpty()) {
+                allSlotsFilled = false;
+                break;
+            }
+        }
+    	if (allSlotsFilled) {
+            JOptionPane.showMessageDialog(null, "복권 번호 생성은 한번에 5개까지 가능합니다");
+            return;
+        }
     }
     
     private void modifyLottery(int rowIndex) {
