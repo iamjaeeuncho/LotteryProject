@@ -48,9 +48,9 @@ public class Main extends JFrame {
         removeCurrentPanel(); // 기존 패널 제거
         currentPanel = new Lottery(); // 새로운 Lottery 패널 생성
         add("Center", currentPanel); // 새로운 패널 추가
-//        category.setUserNo(userNo);
         System.out.println("메인메서 유저"+userNo);
-        new Category(userNo);
+        category = new Category(userNo); // 새로운 Category 객체 생성 및 userNo 전달
+        add("North", category.mainPanel); // 업데이트된 카테고리 패널 추가
         revalidate(); // 변경된 패널 다시 그리기
         repaint();
         System.out.println("메인메서 유저2"+userNo);

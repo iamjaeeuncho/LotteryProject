@@ -34,29 +34,24 @@ public class Category extends JPanel {
         mainPanel.add(lottery);
         mainPanel.add(myPage);
         mainPanel.add(chat);
-        
 
         if (userNo > 0) {
             // 로그아웃 버튼 생성
-        	removeCurrentPanel();
             loginout = new JButton("로그아웃");
             loginout.setFont(new Font("SansSerif", Font.BOLD, 13));
             loginout.setPreferredSize(new Dimension(230, 60));
             System.out.println("로그아웃" + userNo);
-
-            // 로그아웃 버튼 패널에 추가
-            mainPanel.add(loginout);
         } else {
-        	removeCurrentPanel();
-        	loginout = new JButton("로그인");
-        	loginout.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-        	loginout.setPreferredSize(new Dimension(230, 60));
+            loginout = new JButton("로그인");
+            loginout.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+            loginout.setPreferredSize(new Dimension(230, 60));
             System.out.println("카테233" + userNo);
-            mainPanel.add(loginout);
         }
 
+        // 로그인/로그아웃 버튼 패널에 추가
+        mainPanel.add(loginout);
+
         // 패널을 새로고침하여 변경된 내용을 보여줌
-        add(mainPanel);
         revalidate();
         repaint();
     }
