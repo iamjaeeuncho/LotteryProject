@@ -24,7 +24,6 @@ public class UserDAO {
 			cstmt.setString(2, name);
 			cstmt.setString(3, passwd);
 			cstmt.setString(4, email);
-
 			cstmt.execute();
 
 			result = cstmt.getNString(5);
@@ -71,10 +70,26 @@ public class UserDAO {
 
 			String userName = cstmt.getNString(2);
 			return userName;
+			
 		} catch (Exception e) {
 			System.out.println("함수 호출 실패: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	// 회원 탈퇴
+	public void deleteUser(int userNo) {
+        try (Connection con = ConnectionPool.getConnection();
+				CallableStatement cstmt = con.prepareCall("{call DELETE_USER(?)}")){
+        	
+            cstmt.setInt(1, userNo);
+            cstmt.execute();
+            System.out.println(userNo + "사용자 삭제 완료");
+            
+        } catch (Exception e) {
+            System.out.println("프로시저 호출 실패: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

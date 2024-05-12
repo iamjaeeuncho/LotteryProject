@@ -1,4 +1,5 @@
---로그인
+--------------------- USER --------------------- 
+-- 로그인
 CREATE OR REPLACE PROCEDURE SIGNIN(
     p_userid IN VARCHAR2,
     p_password IN VARCHAR2,
@@ -18,7 +19,7 @@ END;
 /
 
 
---회원가입
+-- 회원가입
 CREATE OR REPLACE PROCEDURE SIGNUP(
     p_userid IN VARCHAR2,
     p_username IN VARCHAR2,
@@ -43,7 +44,8 @@ BEGIN
 END;
 /
 
---이름 가져오기
+
+-- 이름 가져오기
 CREATE OR REPLACE PROCEDURE USERNAME(
     p_userNo IN VARCHAR2,
     o_userName OUT VARCHAR2
@@ -55,8 +57,20 @@ END;
 /
 
 
+-- 사용자 탈퇴
+CREATE OR REPLACE PROCEDURE DELETE_USER (
+    p_userNo IN NUMBER
+)
+IS
+BEGIN
+    DELETE FROM LOTTERY WHERE USERNO = p_userNo;
+    DELETE FROM LOTTERY_USER WHERE USERNO = p_userNo;
+    COMMIT;
+END DELETE_USER;
+/
 
---채팅방 패키지
+--------------------- CHAT --------------------- 
+-- 채팅방 패키지
 CREATE OR REPLACE PACKAGE CHAT_PAK AS
   PROCEDURE ADD_PROD(p_userNo IN chat.userno%type, chatName IN chat.chatname%type);
   PROCEDURE CHATLIST_PROD(chatList OUT SYS_REFCURSOR);
@@ -87,8 +101,7 @@ END CHAT_PAK;
 /
 
 
-
---메세지 패키지
+-- 메세지 패키지
 CREATE OR REPLACE PACKAGE MESG_PAK AS
   PROCEDURE SAVECHAT_PROD
   (p_userNo IN message.userno%type, p_text IN message.content%type, p_chatno IN message.chatno%type); --채팅 저장
@@ -115,6 +128,7 @@ END MESG_PAK;
 /
 
 
+--------------------- LOTTERY --------------------- 
 -- 복권 저장
 CREATE OR REPLACE PROCEDURE INSERT_LOTTERY (
     p_userno IN NUMBER,
@@ -133,6 +147,7 @@ BEGIN
 END INSERT_LOTTERY;
 /
 
+
 -- 복권 보기
 CREATE OR REPLACE PROCEDURE SHOW_LOTTERY(
     p_userno IN NUMBER,
@@ -140,8 +155,9 @@ CREATE OR REPLACE PROCEDURE SHOW_LOTTERY(
 )
 IS
 BEGIN
-    OPEN lotteryList FOR SELECT * FROM LOTTERY WHERE USERNO = p_userno;
+    OPEN lotteryList FOR SELECT * FROM LOTTERY WHERE USERNO = p_userno ORDER BY CREATEDAT DESC;
 END SHOW_LOTTERY;
+/
 
 -- 복권 삭제
 CREATE OR REPLACE PROCEDURE DELETE_LOTTERY (

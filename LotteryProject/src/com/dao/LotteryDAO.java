@@ -56,18 +56,15 @@ public class LotteryDAO {
         }
     }
     
- // 로또 번호 반환
+    // 로또 번호 반환
     public Map<Integer, String[]> showLottery(int userNo) {
         ResultSet rs = null;
         Map<Integer, String[]> lotteryResults = new HashMap<>();
 
         try (Connection con = ConnectionPool.getConnection();
             CallableStatement cstmt = con.prepareCall("{call SHOW_LOTTERY(?, ?)}")) {
-            cstmt.setInt(1, userNo); // p_userno 설정
-
-            // OUT 매개변수를 등록합니다.
+            cstmt.setInt(1, userNo);
             cstmt.registerOutParameter(2, OracleTypes.CURSOR); // lotteryList
-
             cstmt.execute(); // 프로시저 실행
 
             rs = (ResultSet) cstmt.getObject(2); // 결과 세트 가져오기
