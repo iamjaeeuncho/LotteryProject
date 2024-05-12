@@ -75,22 +75,24 @@ public class Login extends JPanel implements ActionListener {
         SignInButton.setBounds(209, 490, 237, 64);
         SignInButton.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
         SignInButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String userid = userId.getText();
-                String password = passwd.getText();
-                Object obj = udao.signIn(userid, password);
-                int userNo = ((BigDecimal) obj).intValue();
-                if (userNo > 0) {
-                    // main 으로 변경
-                    main.setUserNo(userNo); // 사용자 번호 설정
-                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
-                } else {
-                    JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
-                    //null인 경우 다이얼로그가 화면 중앙에 표시
-                }
-            }
-
+        	 @Override
+        	    public void actionPerformed(ActionEvent e) {
+        	        if (e.getSource() == SignInButton) {
+        	            String userid = userId.getText();
+        	            String password = passwd.getText();
+        	            Object obj = udao.signIn(userid, password);
+        	            int userNo = ((BigDecimal) obj).intValue();
+        	            if (userNo > 0) {
+        	                JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
+        	                main.setUserNo(userNo); // 사용자 번호 설정
+        	                main.logininit(); // 메인 클래스의 logininit() 메서드 호출하여 중앙 패널 변경
+        	            } else {
+        	                JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
+        	            }
+        	        } else if (e.getSource() == SignUpButton) {
+        	            // 회원가입 처리
+        	        }
+        	 }
         });
         add(SignInButton);
 

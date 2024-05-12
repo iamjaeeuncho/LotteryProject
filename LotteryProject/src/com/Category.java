@@ -5,51 +5,74 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Category extends JFrame {
-    int userNo;
+public class Category extends JPanel {
+    int userNo = 0;
     JButton lottery;
     JButton chat;
-    JButton login;
-    JPanel panel = new JPanel();
-    
-    public Category() {
+    JButton loginout;
+    JPanel mainPanel = new JPanel();
 
-        lottery = new JButton("번호 생성"); 
+    public Category(int userNo) {
+        this.userNo = userNo;
+
+        lottery = new JButton("번호 생성");
         lottery.setPreferredSize(new Dimension(230, 60));
         lottery.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-        
+
         chat = new JButton("채팅");
         chat.setPreferredSize(new Dimension(230, 60));
         chat.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-        
+
         JButton myPage = new JButton("내 정보");
         myPage.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
         myPage.setPreferredSize(new Dimension(230, 60));
+        System.out.println("카테" + userNo);
+
+        mainPanel.setLayout(new FlowLayout());
+        mainPanel.add(lottery);
+        mainPanel.add(myPage);
+        mainPanel.add(chat);
         
-        //////////////////////////////////ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
-        if(userNo>0) {
-            login = new JButton("로그아웃");
-            login.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-            login.setPreferredSize(new Dimension(230, 60));
-        }else {
-            login = new JButton("로그인");
-            login.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-            login.setPreferredSize(new Dimension(230, 60));
+
+        if (userNo > 0) {
+            // 로그아웃 버튼 생성
+        	removeCurrentPanel();
+            loginout = new JButton("로그아웃");
+            loginout.setFont(new Font("SansSerif", Font.BOLD, 13));
+            loginout.setPreferredSize(new Dimension(230, 60));
+            System.out.println("로그아웃" + userNo);
+
+            // 로그아웃 버튼 패널에 추가
+            mainPanel.add(loginout);
+        } else {
+        	removeCurrentPanel();
+        	loginout = new JButton("로그인");
+        	loginout.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+        	loginout.setPreferredSize(new Dimension(230, 60));
+            System.out.println("카테233" + userNo);
+            mainPanel.add(loginout);
         }
-        
-        panel.setLayout(new FlowLayout());
-        panel.add(lottery);
-        panel.add(myPage);
-        panel.add(chat);
-        panel.add(login);
+
+        // 패널을 새로고침하여 변경된 내용을 보여줌
+        add(mainPanel);
+        revalidate();
+        repaint();
     }
+
     public int getUserNo() {
         return userNo;
     }
+
     public void setUserNo(int userNo) {
         this.userNo = userNo;
     }
+    
+    private void removeCurrentPanel() {
+        if (loginout != null) {
+            remove(loginout);
+        }
+    }
 }
+

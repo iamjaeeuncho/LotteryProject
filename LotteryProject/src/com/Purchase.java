@@ -47,7 +47,6 @@ public class Purchase extends JPanel {
     private int clickCnt = 0;
 
     public Purchase() {
-    	System.out.println("ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
         setLayout(null);
         setBackground(Color.WHITE);
         setSize(1000, 500);

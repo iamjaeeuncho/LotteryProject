@@ -21,11 +21,13 @@ import com.dto.ChatVO;
 public class Chat extends JPanel {
 
     int userNo;
-    Category cate = new Category();
+    Category cate = new Category(userNo);
     ChatDAO cdao = new ChatDAO();
     UserDAO udao = new UserDAO();
 
     public Chat(int userNo) {
+    	userNo=cate.getUserNo();
+    	System.out.println(userNo);
         this.userNo = userNo;
         setLayout(null);
         refreshChatList();
@@ -106,9 +108,7 @@ public class Chat extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
                         String userName = udao.userName(userNo);
-                        System.out.println("클라이언트 유저네임"+userName);
                         Client client = new Client(userNo, userName, chatNo);
-                        System.out.println("클라이언트 유저네임"+userNo+userName);
                         client.setVisible(true);
                     }
                 } else {
