@@ -82,10 +82,9 @@ public class WeightedRandom {
     
     // 가중치에 따라 번호 선택
     static List<Integer> selectNumbers() {
-        List<Integer> selectedNumbers = new ArrayList<>();
+        Set<Integer> selectedNumbersSet = new HashSet<>();
         
-        // 6개의 숫자를 선택
-        for (int i = 0; i < 6; i++) {
+        while (selectedNumbersSet.size() < 6) {
             double randomNumber = random.nextDouble(); // 0부터 1사이의 랜덤한 수 생성
             double cumulativeProbability = 0.0;
             
@@ -96,13 +95,16 @@ public class WeightedRandom {
                 
                 cumulativeProbability += weight;
                 if (randomNumber <= cumulativeProbability) {
-                    selectedNumbers.add(number);
+                    selectedNumbersSet.add(number);
                     break;
                 }
             }
         }
-        return selectedNumbers;
+        
+        // Set을 List로 변환하여 반환
+        return new ArrayList<>(selectedNumbersSet);
     }
+
 
 //    // 검증 코드
 //    public static void main(String[] args) {

@@ -26,12 +26,8 @@ public class MyPage extends JPanel {
     LotteryDAO lotteryDao = new LotteryDAO();
     LotteryVO lotteryVo = new LotteryVO();
 
-    private final int ROWS = 5;
-    private final int COLS = 3;
-
     private int lotteryNo;
     private String[] lotteryInfo;
-    private String userNo;
     private String createdAt;
     private String category;
     private String numbers;
@@ -44,6 +40,7 @@ public class MyPage extends JPanel {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         lotteryResults = lotteryDao.showLottery(userNo);
+        
         // 1. 메뉴바
         JPanel menuPanel = new JPanel();
         JLabel menuLabel = new JLabel("번호 생성 내역", SwingConstants.CENTER);
@@ -67,7 +64,6 @@ public class MyPage extends JPanel {
 
             lotteryNo = entry.getKey();
             lotteryInfo = entry.getValue();
-            userNo = Integer.parseInt(lotteryInfo[0]);
             category = lotteryInfo[2];
             numbers = lotteryInfo[3];
             createdAt = lotteryInfo[1];
