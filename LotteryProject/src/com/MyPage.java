@@ -68,7 +68,7 @@ public class MyPage extends JPanel {
         	
         	// 메인 배치
         	mainPanel.setLayout(new BorderLayout());
-        	mainPanel.add(logoutPanel, BorderLayout.CENTER); // Replace tablePanel with tableScrollPane
+        	mainPanel.add(logoutPanel, BorderLayout.CENTER);
         	mainPanel.setVisible(true);
         } else {
         	for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
