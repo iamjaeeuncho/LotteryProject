@@ -24,7 +24,6 @@ public class MyPage extends JPanel {
     UserDAO userDao = new UserDAO();
     LotteryDAO lotteryDao = new LotteryDAO();
 
-    private int lotteryNo;
     private String[] lotteryInfo;
     private String createdAt;
     private String category;
@@ -73,16 +72,17 @@ public class MyPage extends JPanel {
             mainPanel.setVisible(true);
         } else {
             for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
-                JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
+            	final int lotteryNo = entry.getKey();
+            	lotteryInfo = entry.getValue();
+            	category = lotteryInfo[2];
+            	numbers = lotteryInfo[3];
+            	createdAt = lotteryInfo[1];
+            	createdAt = createdAt.substring(0, createdAt.length() - 7);
+
+            	JPanel entryPanel = new JPanel(new GridLayout(1, 5)); // 카테고리, 번호, 삭제를 한 줄에 표시
                 entryPanel.setPreferredSize(new Dimension(1000, 50));
                 entryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
-                lotteryNo = entry.getKey();
-                lotteryInfo = entry.getValue();
-                category = lotteryInfo[2];
-                numbers = lotteryInfo[3];
-                createdAt = lotteryInfo[1];
-                createdAt = createdAt.substring(0, createdAt.length() - 7);
 
                 // 복권 고유 번호
                 JPanel lotteryNumPanel = new JPanel();
@@ -112,7 +112,7 @@ public class MyPage extends JPanel {
                 numbersPanel.setBackground(Color.WHITE);
                 numbersPanel.add(numbersLabel);
                 entryPanel.add(numbersPanel);
-
+                
                 // 삭제 라벨
                 JPanel deletePanel = new JPanel();
                 JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
@@ -120,6 +120,7 @@ public class MyPage extends JPanel {
                 deleteLabel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                    	lotteryDao.deleteLottery(lotteryNo);
                         removeEntryPanel(entryPanel);
                     }
                 });
@@ -145,7 +146,7 @@ public class MyPage extends JPanel {
                     int result = JOptionPane.showConfirmDialog(null, "정말 탈퇴하시겠습니까?", "Confirmation",
                             JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
-                        userDao.deleteUser(userNo);
+                        lotteryDao.deleteLottery(userNo);
                     } else {
                     	return;
                     }
