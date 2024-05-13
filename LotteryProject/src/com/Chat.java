@@ -46,7 +46,7 @@ public class Chat extends JPanel {
         setSize(1000, 500);
         setVisible(true);
         
-        JPanel mainPanel = new JPanel(new GridLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridBagLayout());
@@ -101,30 +101,23 @@ public class Chat extends JPanel {
         		
         		// 삭제 라벨
         		JPanel deletePanel = new JPanel();
-        		deletePanel.setBackground(Color.WHITE);     		
-        		
-        		if (userNo == chatUser) {
-        			JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
-        			deleteLabel.addMouseListener(new MouseAdapter() {
-        				@Override
-        				public void mouseClicked(MouseEvent e) {
-        					if (userNo == chatUser) {        			
-        						addDeleteMouseListener(deleteLabel, chatRoomNum);
-        					} else {
-        						JOptionPane.showMessageDialog(null, "채팅방 생성자만 방을 삭제할 수 있습니다");
-        						return;
-        					}
-        				}
-        			});
-        			deletePanel.add(deleteLabel);
-        		} else if (userNo != chatUser) {
-        			JLabel emptyLabel = new JLabel("", SwingConstants.CENTER);
-        			deletePanel.add(emptyLabel);
-        		}
+        		JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
+        		deletePanel.setBackground(Color.WHITE);
+    			deleteLabel.addMouseListener(new MouseAdapter() {
+    				@Override
+    				public void mouseClicked(MouseEvent e) {
+    					if (userNo == chatUser) {        			
+    						addDeleteMouseListener(deleteLabel, chatRoomNum);
+    					} else {
+    	        			JOptionPane.showMessageDialog(null, "채팅방 생성자만 방을 삭제할 수 있습니다");
+    	                    return;
+    	        		}
+    				}
+    			});
 
+        		deletePanel.add(deleteLabel);
         		entryPanel.add(deletePanel);
-        		entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        		entryPanel.setPreferredSize(new Dimension(900, 100));
+        		
         		tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
         	}
         	

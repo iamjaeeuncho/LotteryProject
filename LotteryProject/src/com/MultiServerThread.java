@@ -1,4 +1,5 @@
 package com;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import com.dao.ChatDAO;
 
-
 public class MultiServerThread extends Thread {
     private static List<MultiServerThread> threads = new ArrayList<>();
     private Socket socket;
@@ -23,7 +23,6 @@ public class MultiServerThread extends Thread {
     private BufferedWriter bw;
     private PrintWriter writer;
     private String userName;
-    private ChatDAO cdao;
 
     public MultiServerThread(String userName, Socket socket) {
         this.userName = userName;
@@ -39,15 +38,17 @@ public class MultiServerThread extends Thread {
             br = new BufferedReader(new InputStreamReader(is));
             bw = new BufferedWriter(new OutputStreamWriter(os));
             writer = new PrintWriter(bw, true);
-            writer.println("\n"+userName + "님이 접속되었습니다.");
-            while (true) {
-                String message = br.readLine();
-                if (message != null) {
-                    sendMessageAll(message); // 클라이언트 이름과 메시지를 합쳐서 보냄
+            writer.println("\n" + userName + "님이 접속되었습니다.");
+
+            String message;
+            while ((message = br.readLine()) != null) {
+                if (message.equals("online")) {
+                    sendOnlineUsers();
+                } else {
+                    sendMessageAll(message);
                 }
             }
         } catch (IOException e) {
-        	
             writer.println(userName + "님이 나갔습니다.");
             threads.remove(this);
             try {
@@ -69,5 +70,16 @@ public class MultiServerThread extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    private synchronized void sendOnlineUsers() {
+    	System.out.println("ddddddddddddd");
+        StringBuilder onlineUsers = new StringBuilder();
+        for (MultiServerThread thread : threads) {
+            onlineUsers.append(thread.userName).append("\n");
+        }
+        // 현재 접속 중인 사용자 목록을 해당 클라이언트에게 반환
+        writer.println("\n현재 접속 중인 사용자 목록:");
+        writer.println(onlineUsers.toString());
     }
 }
