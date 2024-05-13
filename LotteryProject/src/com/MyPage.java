@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.dao.LotteryDAO;
 import com.dao.UserDAO;
@@ -28,9 +29,6 @@ public class MyPage extends JPanel {
     private String createdAt;
     private String category;
     private String numbers;
-
-    private Main main;
-
     private Map<Integer, String[]> lotteryResults;
 
     private JPanel tablePanel;
@@ -146,11 +144,12 @@ public class MyPage extends JPanel {
                     int result = JOptionPane.showConfirmDialog(null, "정말 탈퇴하시겠습니까?", "Confirmation",
                             JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
-                        lotteryDao.deleteLottery(userNo);
+                        userDao.deleteUser(userNo);
+                     // 사용자를 삭제한 후 로그아웃 수행
+                        ((Main) SwingUtilities.getWindowAncestor(MyPage.this)).logout();
                     } else {
                     	return;
                     }
-                    main.logininit();
                 }
             });
 

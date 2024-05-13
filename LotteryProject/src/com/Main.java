@@ -61,6 +61,16 @@ public class Main extends JFrame {
         revalidate(); // 변경된 패널 다시 그리기
         repaint();
     }
+    
+    public void logout() {
+        setUserNo(0);
+        removeCurrentPanel();
+        Login loginPanel = new Login(Main.this);
+        add("Center", loginPanel);
+        currentPanel = loginPanel;
+        revalidate();
+        repaint();
+    }
 
     private class Listener implements ActionListener {
         @Override
