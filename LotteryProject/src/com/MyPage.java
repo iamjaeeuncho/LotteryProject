@@ -169,10 +169,6 @@ public class MyPage extends JPanel {
 
     private void removeEntryPanel(JPanel entryPanel) {
         tablePanel.remove(entryPanel);
-        adjustScrollPaneHeight();
-    }
-
-    private void adjustScrollPaneHeight() {
         int panelCount = tablePanel.getComponentCount();
         int newHeight = panelCount * 60;
         tablePanel.setPreferredSize(new Dimension(900, newHeight));

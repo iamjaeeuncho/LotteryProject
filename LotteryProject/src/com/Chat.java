@@ -71,7 +71,7 @@ public class Chat extends JPanel {
             JPanel logoutPanel = new JPanel();
             logoutPanel.setPreferredSize(new Dimension(1000, 50));
 
-            JLabel logoutLabel = new JLabel("로그인 한 사용자만 채팅 참여가 가능합니다", SwingConstants.CENTER);
+            JLabel logoutLabel = new JLabel("로그인 한 사용자만 내 정보를 볼 수 있습니다", SwingConstants.CENTER);
             logoutPanel.add(logoutLabel);
 
             // 메인 배치
@@ -102,7 +102,8 @@ public class Chat extends JPanel {
                 // 삭제 라벨
                 JPanel deletePanel = new JPanel();
                 deletePanel.setBackground(Color.WHITE);
-
+                System.out.println(userNo);
+                System.out.println(chatUser);
                 if (userNo == chatUser) {
                     JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
                     deleteLabel.addMouseListener(new MouseAdapter() {
@@ -150,21 +151,17 @@ public class Chat extends JPanel {
 
             addRoomMouseListener(makeRoomLabel, chatRoomNum);
 
-            makeRoomLabel.setPreferredSize(new Dimension(700, 50));
             buttonPanel.setPreferredSize(new Dimension(700, 50));
             buttonPanel.add(makeRoomLabel);
 
             // 메인 배치
+            mainPanel.setLayout(new BorderLayout());
             mainPanel.add(menuPanel, BorderLayout.NORTH);
             mainPanel.add(tableScrollPane, BorderLayout.CENTER);
             mainPanel.add(buttonPanel, BorderLayout.SOUTH);
             mainPanel.setVisible(true);
         }
         add(mainPanel, BorderLayout.CENTER);
-        // Adjust scroll pane view
-        tablePanel.setPreferredSize(new Dimension(900, tablePanel.getComponentCount() * 100));
-        tableScrollPane.revalidate();
-        tableScrollPane.repaint();
     }
 
     
@@ -204,10 +201,6 @@ public class Chat extends JPanel {
     
     private void removeEntryPanel(JPanel entryPanel) {
         tablePanel.remove(entryPanel);
-        adjustScrollPaneHeight();
-    }
-
-    private void adjustScrollPaneHeight() {
         int panelCount = tablePanel.getComponentCount();
         int newHeight = panelCount * 60;
         tablePanel.setPreferredSize(new Dimension(900, newHeight));
