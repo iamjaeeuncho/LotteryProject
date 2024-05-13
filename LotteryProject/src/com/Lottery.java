@@ -252,7 +252,7 @@ public class Lottery extends JPanel {
             selectedIndex = -1;
         } else {
             resetNumbers(); // 다른 카테고리가 선택된 경우 숫자 패널 초기화
-            categoryPanels[index].setBackground(Color.BLACK);
+            categoryPanels[index].setBackground(Color.GRAY);
             categoryPanels[index].setForeground(Color.WHITE);
             categoryCellStates[index] = true;
             selectedIndex = index;
@@ -277,7 +277,7 @@ public class Lottery extends JPanel {
         }
         
         numberCellStates[row][col] = !numberCellStates[row][col];
-        Color bg = numberCellStates[row][col] ? Color.BLACK : Color.WHITE;
+        Color bg = numberCellStates[row][col] ? Color.GRAY : Color.WHITE;
         Color fg = numberCellStates[row][col] ? Color.RED : Color.BLACK;
         numberPanels[row][col].setBackground(bg);
         numberPanels[row][col].setForeground(fg);

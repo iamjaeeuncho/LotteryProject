@@ -27,7 +27,6 @@ public class Login extends JPanel implements ActionListener {
     private JTextField email;
     private UserDAO udao = new UserDAO();
     private Main main;
-    private JFrame jframe;
 
     public Login(Main main) {
         this.main = main;
@@ -73,26 +72,6 @@ public class Login extends JPanel implements ActionListener {
         SignInButton = new JButton("로그인");
         SignInButton.setBounds(550, 400, 200, 50);
         SignInButton.addActionListener(new ActionListener() {
-<<<<<<< HEAD
-        	 @Override
-        	    public void actionPerformed(ActionEvent e) {
-        	        if (e.getSource() == SignInButton) {
-        	            String userid = userId.getText();
-        	            String password = passwd.getText();
-        	            Object obj = udao.signIn(userid, password);
-        	            int userNo = ((BigDecimal) obj).intValue();
-        	            if (userNo > 0) {
-        	                JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
-        	                main.setUserNo(userNo); // 사용자 번호 설정
-        	                main.logininit(); // 메인 클래스의 logininit() 메서드 호출하여 중앙 패널 변경
-        	            } else {
-        	                JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
-        	            }
-        	        } else if (e.getSource() == SignUpButton) {
-        	            // 회원가입 처리
-        	        }
-        	 }
-=======
             @Override
             public void actionPerformed(ActionEvent e) {
                 String userid = userId.getText();
@@ -103,19 +82,31 @@ public class Login extends JPanel implements ActionListener {
                     // main 으로 변경
                     main.setUserNo(userNo); // 사용자 번호 설정
                     JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
+                    main.logininit(); 
                 } else {
                     JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
                 }
             }
->>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
         });
         add(SignInButton);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	// 로그인 버튼이 클릭되었을 때
         if (e.getSource() == SignInButton) {
-
+            String userid = userId.getText();
+            String password = passwd.getText();
+            Object obj = udao.signIn(userid, password);
+            int userNo = ((BigDecimal) obj).intValue();
+            if (userNo > 0) {
+                JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
+                main.logininit(); 
+                main.setUserNo(userNo); // 사용자 번호 설정
+            } else {
+                JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
+            }
+        // 회원가입 버튼 클릭 시
         } else if (e.getSource() == SignUpButton) {
             JFrame frame = new JFrame();
             frame.setTitle("회원가입");

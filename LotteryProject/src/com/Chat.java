@@ -23,23 +23,17 @@ import com.dto.ChatVO;
 
 public class Chat extends JPanel {
 
-    int userNo;
-<<<<<<< HEAD
-    Category cate = new Category(userNo);
-=======
-    int chatUser;
-    String chatRoom;
-	int chatRoomNum;
-	
-    Category cate = new Category();
->>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
-    ChatDAO cdao = new ChatDAO();
-    UserDAO udao = new UserDAO();
+    private int userNo;
+    private int chatUser;
+    private String chatRoom;
+    private int chatRoomNum;
+
+    private Category category = new Category(userNo);
+    private ChatDAO cdao = new ChatDAO();
+    private UserDAO udao = new UserDAO();
 
     public Chat(int userNo) {
-    	userNo=cate.getUserNo();
-    	System.out.println(userNo);
-        this.userNo = userNo;
+        this.userNo=userNo;
 //        setLayout(null);
         refreshChatList();
     }
@@ -51,6 +45,7 @@ public class Chat extends JPanel {
         repaint();
         setSize(1000, 500);
         setVisible(true);
+        
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // 1. 메뉴바
@@ -75,7 +70,7 @@ public class Chat extends JPanel {
         	JPanel logoutPanel = new JPanel();
         	logoutPanel.setPreferredSize(new Dimension(1000, 50));
         	        
-        	JLabel logoutLabel = new JLabel("로그인 한 사용자만 사용가능한 기능입니다", SwingConstants.CENTER);
+        	JLabel logoutLabel = new JLabel("로그인 한 사용자만 채팅 참여가 가능합니다", SwingConstants.CENTER);
         	logoutPanel.add(logoutLabel);
         	
         	// 메인 배치
