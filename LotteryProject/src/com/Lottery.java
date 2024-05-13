@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,9 +27,11 @@ import com.dto.LotteryVO;
 public class Lottery extends JPanel {
 	
 	LotteryDAO lotteryDao = new LotteryDAO();
-	LotteryVO lotteryVo = new LotteryVO();
+	WeightedRandom weightedRandom = new WeightedRandom();
 	
-    private JPanel[] categoryPanels;
+	int userNo;
+
+	private JPanel[] categoryPanels;
     private boolean[] categoryCellStates;
     private int selectedIndex = -1;
 
@@ -42,17 +45,16 @@ public class Lottery extends JPanel {
     private final int NUMBER_ARRAY_SIZE = 6;
 
     private JPanel[][] resultPanels;
-    private String[][] resultCellValues;
-    private final int RESULT_ROWS = 5;
-    private final int RESULT_COLS = 3;
-    
     private JLabel[][] resultLabels;
+    private final int RESULT_ROWS = 5;
+    private final int RESULT_COLS = 3;   
+    private boolean allSlotsFilled = true;
 
-    public Lottery() {
-        setBackground(Color.WHITE);
-        setSize(700, 500);
+    public Lottery(int userNo) {
+        setSize(1000, 500);
         setVisible(true);
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        
+        JPanel mainPanel = new JPanel(new BorderLayout());        
 
         // 1. 카테고리: 자동, 반자동, 수동
         categoryPanels = new JPanel[3];
@@ -87,7 +89,7 @@ public class Lottery extends JPanel {
         selectedNumbers = new ArrayList<Integer>();
 
         JPanel numberPanel = new JPanel(new GridLayout(NUMBER_ROWS, NUMBER_COLS));
-        numberPanel.setPreferredSize(new Dimension(400, 300));
+        numberPanel.setPreferredSize(new Dimension(400, 400));
         
         int num = 1;
         for (int i = 0; i < NUMBER_ROWS; i++) {
@@ -116,7 +118,6 @@ public class Lottery extends JPanel {
                     numberPanels[i][j].add(emptyLabel);
                     numberPanels[i][j].setEnabled(false);
                 }
-                
                 numberPanel.add(numberPanels[i][j]);
                 num++;
             }
@@ -130,17 +131,17 @@ public class Lottery extends JPanel {
         confirmPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         JLabel confirmLabel = new JLabel("선택하기", SwingConstants.CENTER);
-        confirmLabel.addMouseListener(new MouseAdapter() {
+        confirmPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                selectLottery();
+                selectLottery(userNo);
             }
         });
         confirmPanel.add(confirmLabel);
 
         // 왼쪽 사이드
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setPreferredSize(new Dimension(400, 400));
+        inputPanel.setPreferredSize(new Dimension(400, 500));
         inputPanel.add(categoryPanel, BorderLayout.NORTH);
         inputPanel.add(numberPanel, BorderLayout.CENTER);
         inputPanel.add(confirmPanel, BorderLayout.SOUTH);
@@ -149,20 +150,19 @@ public class Lottery extends JPanel {
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridLayout(1, 1));
         JLabel menuLabel = new JLabel("선택 번호 확인", SwingConstants.CENTER);
-        menuPanel.setPreferredSize(new Dimension(700, 50));
+        menuPanel.setPreferredSize(new Dimension(600, 50));
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         menuPanel.add(menuLabel);
 
         // 2. 결과 출력
         resultPanels = new JPanel[RESULT_ROWS][RESULT_COLS];
-        resultCellValues = new String[RESULT_ROWS][RESULT_COLS];
         savedNumbers = new ArrayList<Integer>();
 
         JPanel resultPanel = new JPanel(new GridLayout(RESULT_ROWS, RESULT_COLS));
-        resultPanel.setPreferredSize(new Dimension(700, 500));
+        resultPanel.setPreferredSize(new Dimension(600, 400));
 
-        String value = "";
+        String emptyValue = "";
         resultLabels = new JLabel[RESULT_ROWS][RESULT_COLS];
 
         for (int i = 0; i < RESULT_ROWS; i++) {
@@ -171,8 +171,7 @@ public class Lottery extends JPanel {
                 resultPanels[i][j].setBackground(Color.WHITE);
                 resultPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                resultCellValues[i][j] = value;
-                resultLabels[i][j] = new JLabel(String.valueOf(resultCellValues[i][j]));
+                resultLabels[i][j] = new JLabel(emptyValue);
                 resultPanels[i][j].add(resultLabels[i][j]);
 
                 if (j == 2) {
@@ -182,7 +181,7 @@ public class Lottery extends JPanel {
 
                     // 수정 버튼
                     JLabel modifyLabel = new JLabel("수정", SwingConstants.CENTER);
-                    modifyLabel.setPreferredSize(new Dimension(60, 30));
+                    modifyLabel.setPreferredSize(new Dimension(50, 30));
                     modifyLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -192,7 +191,7 @@ public class Lottery extends JPanel {
 
                     // 삭제 버튼
                     JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
-                    deleteLabel.setPreferredSize(new Dimension(60, 30));
+                    deleteLabel.setPreferredSize(new Dimension(50, 30));
                     deleteLabel.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -213,23 +212,23 @@ public class Lottery extends JPanel {
 
         // 3. 저장하기
         JPanel registerPanel = new JPanel(new GridBagLayout());
-        registerPanel.setPreferredSize(new Dimension(700, 50));
+        registerPanel.setPreferredSize(new Dimension(600, 50));
         registerPanel.setOpaque(true);
         registerPanel.setBackground(Color.WHITE);
         registerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         JLabel registerLabel = new JLabel("저장하기", SwingConstants.CENTER);
-        registerLabel.addMouseListener(new MouseAdapter() {
+        registerPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                lotteryDao.saveLottery(saveLottery());
+                lotteryDao.saveLottery(userNo, saveLottery());
             }
         });
         registerPanel.add(registerLabel);
 
         // 오른쪽 사이드
         JPanel outputPanel = new JPanel(new BorderLayout());
-        outputPanel.setPreferredSize(new Dimension(700, 400));
+        outputPanel.setPreferredSize(new Dimension(600, 500));
         outputPanel.add(menuPanel, BorderLayout.NORTH);
         outputPanel.add(resultPanel, BorderLayout.CENTER);
         outputPanel.add(registerPanel, BorderLayout.SOUTH);
@@ -237,7 +236,7 @@ public class Lottery extends JPanel {
         // 메인 배치
         mainPanel.add(inputPanel, BorderLayout.WEST);
         mainPanel.add(outputPanel, BorderLayout.CENTER);
-
+        
         add(mainPanel, BorderLayout.CENTER);
     }
     // ----------------- Methods -----------------
@@ -320,81 +319,94 @@ public class Lottery extends JPanel {
         selectedNumbers.clear();         // 선택된 숫자 리스트 초기화
     }
     
- // 선택된 카테고리와 숫자 출력
-    private void selectLottery() {
+    // 결과 초기화
+    private void resetResults() {
+        for (int i = 0; i < RESULT_ROWS; i++) {
+        	deleteLottery(i);
+        }
+    }
+    
+    // 선택된 카테고리와 숫자 출력
+    private void selectLottery(int userNo) {    	
         // 1부터 45까지의 숫자가 담긴 리스트 생성
         ArrayList<Integer> randomNumbers = new ArrayList<>();
         for (int i = 1; i <= 45; i++) {
             randomNumbers.add(i);
         }
         
-//		if (!resultLabels[RESULT_ROWS][0].getText().equals("")) {
-//			JOptionPane.showMessageDialog(null, "복권 번호는 한번에 최소 1개가 있어야 발급 가능합니다");
-//		}
-
-        // 카테고리 미선택시
-        if (selectedIndex == -1) {
-            JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
-            return;
-        }
-
-        // 자동 카테고리: 무작위로 6개의 숫자 선택
-        if (selectedIndex == 0) {
-            Random random = new Random();
-            for (int i = 0; i < 6; i++) {
-                int index = random.nextInt(randomNumbers.size());
-                selectedNumbers.add(randomNumbers.get(index));
-                randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
-            }
-        // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
-        } else if (selectedIndex == 1) {
-            int selectedlength = selectedNumbers.size();
-            if (selectedlength == 0) {
-                JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
-                return;
-            } else {
-                Random random = new Random();
-                for (int i = 0; i < 6 - selectedlength; i++) {
-                    int index = random.nextInt(randomNumbers.size());
-                    selectedNumbers.add(randomNumbers.get(index));
-                    randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
-                }
-            }
-        // 수동 카테고리
-        } else if (selectedIndex == 2) {
-            if (selectedNumbers.size() != NUMBER_ARRAY_SIZE || selectedIndex == -1) {
-                JOptionPane.showMessageDialog(null, "카테고리와 " + NUMBER_ARRAY_SIZE + "개 숫자를 선택해주세요");
+        // 로그인 유저 체크
+    	if (userNo == 0) {
+            JOptionPane.showMessageDialog(null, "로그인 사용자만 복권 번호 생성이 가능합니다");
+        } else {       	
+        	// 카테고리 미선택시
+            if (selectedIndex == -1) {
+                JOptionPane.showMessageDialog(null, "카테고리를 선택해주세요");
                 return;
             }
-        }
 
-        Collections.sort(selectedNumbers);
-
-        // 카테고리와 숫자를 맵형식으로 저장
-        Map<String, Object> selectionMap = new HashMap<>();
-        if (selectedIndex != -1) {
-            String selectedCategory = getCategoryName(selectedIndex);
-            selectionMap.put("category", selectedCategory);
-        }
-
-        selectionMap.put("numbers", selectedNumbers);
-
-        // 비어 있는 행에 결과 입력
-        for (int i = 0; i < RESULT_ROWS; i++) {
-            if (resultLabels[i][0].getText().isEmpty()) {
-                for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
-                    if (entry.getKey().equals("category")) {
-                        resultLabels[i][0].setText(entry.getValue().toString());
-                    } else if (entry.getKey().equals("numbers")) {
-                        resultLabels[i][1].setText(entry.getValue().toString());
+            // 자동 카테고리: 무작위로 6개의 숫자 선택
+            if (selectedIndex == 0) {
+            	List<Integer> Weightedrandom = weightedRandom.selectNumbers();
+            	System.out.println(Weightedrandom);
+            	
+            	for (Integer num : Weightedrandom) {
+            	    selectedNumbers.add(num);
+            	}
+                
+            // 반자동 카테고리: 선택된 숫자 이외 숫자 자동 선택
+            } else if (selectedIndex == 1) {
+                int selectedlength = selectedNumbers.size();
+                if (selectedlength == 0) {
+                    JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
+                    return;
+                } else {
+                    Random random = new Random();
+                    for (int i = 0; i < NUMBER_ARRAY_SIZE - selectedlength; i++) {
+                        int index = random.nextInt(randomNumbers.size());
+                        selectedNumbers.add(randomNumbers.get(index));
+                        randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
                     }
                 }
-                break;
+            // 수동 카테고리
+            } else if (selectedIndex == 2) {
+                if (selectedNumbers.size() != NUMBER_ARRAY_SIZE || selectedIndex == -1) {
+                    JOptionPane.showMessageDialog(null, "카테고리와 " + NUMBER_ARRAY_SIZE + "개 숫자를 선택해주세요");
+                    return;
+                }
             }
-        }
 
-        resetCategory(); // 초기화
-        resetNumbers();
+            Collections.sort(selectedNumbers);
+
+            // 카테고리와 숫자를 맵형식으로 저장
+            Map<String, Object> selectionMap = new HashMap<>();
+            if (selectedIndex != -1) {
+                String selectedCategory = getCategoryName(selectedIndex);
+                selectionMap.put("category", selectedCategory);
+            }
+
+            selectionMap.put("numbers", selectedNumbers);
+
+            // 비어 있는 행에 결과 입력
+            for (int i = 0; i < RESULT_ROWS; i++) {
+                if (resultLabels[i][0].getText().isEmpty()) {
+                    for (Map.Entry<String, Object> entry : selectionMap.entrySet()) {
+                        if (entry.getKey().equals("category")) {
+                            resultLabels[i][0].setText(entry.getValue().toString());
+                        } else if (entry.getKey().equals("numbers")) {
+                            resultLabels[i][1].setText(entry.getValue().toString());
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            // 이미 5개의 복권 번호 세트가 존재하면 추가 저장 차단         
+            getResultState();
+
+            resetCategory(); // 초기화
+            resetNumbers();
+            
+        }
     }
 
     private String getCategoryName(int index) {
@@ -417,8 +429,17 @@ public class Lottery extends JPanel {
         return result;
     }
     
-    private void WeightedRandom() {
-    	
+    private void getResultState() {
+    	for (int i = 0; i <= RESULT_ROWS; i++) {
+            if (resultLabels[i][1].getText().isEmpty()) {
+                allSlotsFilled = false;
+                break;
+            }
+        }
+    	if (allSlotsFilled) {
+            JOptionPane.showMessageDialog(null, "복권 번호 생성은 한번에 5개까지 가능합니다");
+            return;
+        }
     }
     
     private void modifyLottery(int rowIndex) {
@@ -430,7 +451,6 @@ public class Lottery extends JPanel {
     	} else if (category.equals("수동")) {
     		toggleCategory(2);
     	}
-    	
     	selectedNumbers.clear();
     	
     	for (int i = 0; i < NUMBER_ROWS; i++) {
@@ -445,23 +465,27 @@ public class Lottery extends JPanel {
     }
     
     private void deleteLottery(int rowIndex) {
-    	for (int i = 0; i < 2; i++) {    		
-    		resultLabels[rowIndex][i].setText("");
-    	}
+    	if (rowIndex < RESULT_ROWS) { // 인덱스가 범위 내에 있는지 확인
+            for (int i = 0; i < 2; i++) {
+                resultLabels[rowIndex][i].setText("");
+            }
+        }
     }
     
-    private Map<Integer, Object> saveLottery() {    	
+    private Map<Integer, Object> saveLottery() {
     	// 카테고리와 숫자를 맵형식으로 저장
     	Map<Integer, Object> lotteryMap = new HashMap<>();
+    	
+    	for (int i = 0; i < RESULT_ROWS; i++) { // 수정: <= 대신에 <
+            String category = resultLabels[i][0].getText();
+            String numbers = resultLabels[i][1].getText();
 
-        for (int i = 1; i <= RESULT_ROWS; i++) {
-        	int index = i;
-            String category = resultLabels[i - 1][0].getText();
-            String numbers = resultLabels[i - 1][1].getText();
-
-            lotteryMap.put(index, new String[]{category, numbers});
-            System.out.println(index + category + numbers);
+            if (!category.isEmpty()) {
+                lotteryMap.put(i + 1, new String[]{category, numbers});
+            }
         }
+        
+        resetResults();
         return lotteryMap;
     }
 }

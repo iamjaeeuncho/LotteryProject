@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 
 import com.dao.UserDAO;
 
-
 public class Login extends JPanel implements ActionListener {
     private JTextField userId;
     private JTextField passwd;
@@ -39,42 +38,42 @@ public class Login extends JPanel implements ActionListener {
         Image scaledImage = bsImg.getImage().getScaledInstance(bsImg.getIconWidth() / 2, bsImg.getIconHeight() / 2, Image.SCALE_SMOOTH);
         bsImg = new ImageIcon(scaledImage);
         img.setIcon(bsImg);
-
-        // JLabel을 패널에 추가합니다.
         add(img);
 
-        // JLabel의 위치를 오른쪽으로 조정합니다.
-        int x = 30; // x 좌표
+        // 이미지 위치 조정
+        int x = 420; // x 좌표
         int y = 20; // y 좌표
         int width = bsImg.getIconWidth(); // 이미지의 폭
         int height = bsImg.getIconHeight(); // 이미지의 높이
-        img.setBounds(x + 350, y + 35, width, height); // 오른쪽으로 50만큼 이동
-        //여기까지 이미지 위치 조정
+        img.setBounds(x, y, width, height);
 
-        JLabel useridLabel = new JLabel(" 아이디");
-        useridLabel.setBounds(229, 300, 195, 64);
-        useridLabel.setFont(new Font("SansSerif", Font.BOLD, 18)); // 글꼴 크기 설정
+        JLabel useridLabel = new JLabel("아이디");
+        useridLabel.setBounds(325, 275, 100, 50);
         add(useridLabel);
 
         userId = new JTextField();
-        userId.setBounds(483, 300, 304, 64);
+        userId.setBounds(500, 275, 250, 50);
         userId.setColumns(10);
         add(userId);
 
-        JLabel passwordLabel = new JLabel(" 비밀번호");
-        passwordLabel.setBounds(229, 370, 195, 64);
-        passwordLabel.setFont(new Font("SansSerif", Font.BOLD, 18)); // 글꼴 크기 설정
+        JLabel passwordLabel = new JLabel("비밀번호");
+        passwordLabel.setBounds(325, 330, 100, 50);
         add(passwordLabel);
 
         passwd = new JPasswordField();
         passwd.setColumns(10);
-        passwd.setBounds(483, 370, 304, 64);
+        passwd.setBounds(500, 330, 250, 50);
         add(passwd);
 
+        SignUpButton = new JButton("회원가입");
+        SignUpButton.setBounds(325, 400, 200, 50);
+        SignUpButton.addActionListener(this);
+        add(SignUpButton);
+        
         SignInButton = new JButton("로그인");
-        SignInButton.setBounds(209, 490, 237, 64);
-        SignInButton.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+        SignInButton.setBounds(550, 400, 200, 50);
         SignInButton.addActionListener(new ActionListener() {
+<<<<<<< HEAD
         	 @Override
         	    public void actionPerformed(ActionEvent e) {
         	        if (e.getSource() == SignInButton) {
@@ -93,14 +92,24 @@ public class Login extends JPanel implements ActionListener {
         	            // 회원가입 처리
         	        }
         	 }
+=======
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userid = userId.getText();
+                String password = passwd.getText();
+                Object obj = udao.signIn(userid, password);
+                int userNo = ((BigDecimal) obj).intValue();
+                if (userNo > 0) {
+                    // main 으로 변경
+                    main.setUserNo(userNo); // 사용자 번호 설정
+                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
+                } else {
+                    JOptionPane.showMessageDialog(null, "아이디와 비밀번호를 확인하세요");
+                }
+            }
+>>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
         });
         add(SignInButton);
-
-        SignUpButton = new JButton("회원가입");
-        SignUpButton.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
-        SignUpButton.setBounds(493, 490, 304, 64);
-        SignUpButton.addActionListener(this);
-        add(SignUpButton);
     }
 
     @Override
@@ -113,50 +122,52 @@ public class Login extends JPanel implements ActionListener {
             frame.setSize(850, 600); // 크기 조정
             frame.getContentPane().setLayout(null);
 
+            JLabel nameLabel = new JLabel("이름");
+            nameLabel.setBounds(175, 100, 50, 50);
+            frame.getContentPane().add(nameLabel);
+
+            JLabel userIdLabel = new JLabel("아이디");
+            userIdLabel.setBounds(175, 175, 50, 50);
+            frame.getContentPane().add(userIdLabel);
+
+            JLabel emailLabel = new JLabel("이메일");
+            emailLabel.setBounds(175, 250, 50, 50);
+            frame.getContentPane().add(emailLabel);
+
+            JLabel passwdLabel = new JLabel("비밀번호");
+            passwdLabel.setBounds(175, 325, 50, 50);
+            frame.getContentPane().add(passwdLabel);
+
+            
             name = new JTextField();
-            name.setBounds(413, 107, 304, 44);
+            name.setBounds(400, 100, 275, 50);
             frame.getContentPane().add(name);
             name.setColumns(10);
 
-            JLabel nameLabel = new JLabel("이름:");
-            nameLabel.setBounds(206, 106, 195, 44);
-            frame.getContentPane().add(nameLabel);
+            userId = new JTextField();
+            userId.setColumns(10);
+            userId.setBounds(400, 175, 275, 50);
+            frame.getContentPane().add(userId);
 
+            email = new JTextField();
+            email.setColumns(10);
+            email.setBounds(400, 250, 275, 50);
+            frame.getContentPane().add(email);
+
+            passwd = new JPasswordField();
+            passwd.setColumns(10);
+            passwd.setBounds(400, 325, 275, 50);
+            frame.getContentPane().add(passwd);
+            
             JButton signUp = new JButton("회원가입");
             signUp.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 }
             });
-
-            JLabel userIdLabel = new JLabel("아이디:");
-            userIdLabel.setBounds(206, 195, 195, 44);
-            frame.getContentPane().add(userIdLabel);
-
-            JLabel emailLabel = new JLabel("이메일:");
-            emailLabel.setBounds(206, 278, 195, 44);
-            frame.getContentPane().add(emailLabel);
-
-            JLabel passwdLabel = new JLabel("비밀번호:");
-            passwdLabel.setBounds(206, 365, 195, 44);
-            frame.getContentPane().add(passwdLabel);
-
-            signUp.setBounds(238, 454, 414, 64);
+            
+            signUp.setBounds(200, 425, 450, 50);
             frame.getContentPane().add(signUp);
 
-            userId = new JTextField();
-            userId.setColumns(10);
-            userId.setBounds(413, 195, 304, 44);
-            frame.getContentPane().add(userId);
-
-            email = new JTextField();
-            email.setColumns(10);
-            email.setBounds(413, 278, 304, 44);
-            frame.getContentPane().add(email);
-
-            passwd = new JPasswordField();
-            passwd.setColumns(10);
-            passwd.setBounds(413, 366, 304, 44);
-            frame.getContentPane().add(passwd);
             // 컴포넌트를 프레임에 추가
             frame.add(nameLabel);
             frame.add(name);
@@ -195,7 +206,7 @@ public class Login extends JPanel implements ActionListener {
                         }
                     }
                 }
-            });//event
+            });
         }
     }
 }

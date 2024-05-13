@@ -8,11 +8,23 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class Category extends JPanel {
+<<<<<<< HEAD
     int userNo = 0;
+=======
+    int userNo;
+>>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
     JButton lottery;
+    JButton myPage;    
     JButton chat;
+<<<<<<< HEAD
     JButton loginout;
     JPanel mainPanel = new JPanel();
+=======
+    JButton login;
+    JPanel mainPanel = new JPanel();
+    
+    public Category() {
+>>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
 
     public Category(int userNo) {
         this.userNo = userNo;
@@ -24,8 +36,13 @@ public class Category extends JPanel {
         chat = new JButton("채팅");
         chat.setPreferredSize(new Dimension(230, 60));
         chat.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
+<<<<<<< HEAD
 
         JButton myPage = new JButton("내 정보");
+=======
+        
+        myPage = new JButton("내 정보");
+>>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
         myPage.setFont(new Font("SansSerif", Font.BOLD, 13)); // 글꼴 크기 설정
         myPage.setPreferredSize(new Dimension(230, 60));
         System.out.println("카테" + userNo);
@@ -47,6 +64,7 @@ public class Category extends JPanel {
             loginout.setPreferredSize(new Dimension(230, 60));
             System.out.println("카테233" + userNo);
         }
+<<<<<<< HEAD
 
         // 로그인/로그아웃 버튼 패널에 추가
         mainPanel.add(loginout);
@@ -54,6 +72,14 @@ public class Category extends JPanel {
         // 패널을 새로고침하여 변경된 내용을 보여줌
         revalidate();
         repaint();
+=======
+        
+        mainPanel.setLayout(new FlowLayout());
+        mainPanel.add(lottery);
+        mainPanel.add(myPage);
+        mainPanel.add(chat);
+        mainPanel.add(login);
+>>>>>>> branch 'main' of https://github.com/iamjaeeuncho/LotteryProject.git
     }
 
     public int getUserNo() {
