@@ -6,14 +6,13 @@ CREATE TABLE LOTTERY_USER (
     email VARCHAR2(100) NOT NULL,        -- 이메일 주소
     createdAt DATE DEFAULT SYSDATE, -- 생성일
     modifiedAt DATE,                 -- 수정일
-    status	VARCHAR2(2)	NOT NULL
 );
 
 CREATE TABLE LOTTERY (
 	lotteryNo  NUMBER(5)generated always as identity NOT NULL,
 	userNo	NUMBER(5)	NOT NULL,
 	createdAt	TIMESTAMP	NOT NULL,
-	modifedAt	TIMESTAMP	NULL,
+	modifiedAt	TIMESTAMP	NULL,
 	category	NUMBER(4)	NOT NULL,
 	lottery1	NUMBER(4)	NOT NULL,
 	lottery2	NUMBER(4)	NOT NULL,
@@ -21,7 +20,6 @@ CREATE TABLE LOTTERY (
 	lottery4	NUMBER(4)	NOT NULL,
 	lottery5	NUMBER(4)	NOT NULL,
 	lottery6	NUMBER(4)	NOT NULL,
-	status	VARCHAR2(2)	NOT NULL
 );
 
 CREATE TABLE CHAT (
@@ -29,7 +27,7 @@ CREATE TABLE CHAT (
 	userNo	NUMBER(5) NOT NULL,
 	chatName	VARCHAR2(80) NOT NULL,
 	createdChat	DATE DEFAULT SYSDATE	NOT NULL,
-	updateChat	DATE DEFAULT SYSDATE	NULL,
+	updatedChat	DATE DEFAULT SYSDATE	NULL,
 	lastChatMesg NUMBER(5)NULL,	
 	status	VARCHAR2(4)	NOT NULL
 );
@@ -40,8 +38,7 @@ CREATE TABLE MESSAGE (
 	userNo	NUMBER(5)	NOT NULL,
 	content	VARCHAR2(1000)	NOT NULL,
 	createdMesg	DATE DEFAULT SYSDATE	NOT NULL,
-	updateMesg	DATE DEFAULT SYSDATE	NULL,
-	status	VARCHAR2(4)	NULL
+	updatedMesg	DATE DEFAULT SYSDATE	NULL,
 );
 
 

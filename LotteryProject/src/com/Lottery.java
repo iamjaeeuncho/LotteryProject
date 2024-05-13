@@ -10,9 +10,11 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -360,12 +362,16 @@ public class Lottery extends JPanel {
                     JOptionPane.showMessageDialog(null, "반자동일 경우 수동 번호는 최소 1개는 선택해주세요");
                     return;
                 } else {
+                    Set<Integer> randomNumbersSet = new HashSet<>();
                     Random random = new Random();
                     for (int i = 0; i < NUMBER_ARRAY_SIZE - selectedlength; i++) {
-                        int index = random.nextInt(randomNumbers.size());
-                        selectedNumbers.add(randomNumbers.get(index));
-                        randomNumbers.remove(index); // 선택한 숫자는 리스트에서 제거하여 중복 선택 방지
+                        int randomNumber;
+                        do {
+                            randomNumber = random.nextInt(45) + 1;
+                        } while (selectedNumbers.contains(randomNumber) || randomNumbersSet.contains(randomNumber));
+                        randomNumbersSet.add(randomNumber);
                     }
+                    selectedNumbers.addAll(randomNumbersSet);
                 }
             // 수동 카테고리
             } else if (selectedIndex == 2) {

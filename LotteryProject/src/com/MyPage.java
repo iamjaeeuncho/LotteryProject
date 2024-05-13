@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -33,6 +34,8 @@ public class MyPage extends JPanel {
     private String category;
     private String numbers;
 
+    private Main main;
+    
     private Map<Integer, String[]> lotteryResults;
 
     public MyPage(int userNo) {
@@ -86,6 +89,7 @@ public class MyPage extends JPanel {
         		// 복권 고유 번호
         		JPanel lotteryNumPanel = new JPanel();
         		JLabel lotteryNoLabel = new JLabel(String.valueOf(lotteryNo), SwingConstants.CENTER);
+        		lotteryNoLabel.setForeground(Color.WHITE);
         		lotteryNumPanel.setBackground(Color.WHITE);
         		lotteryNumPanel.add(lotteryNoLabel);
         		entryPanel.add(lotteryNumPanel);
@@ -138,7 +142,15 @@ public class MyPage extends JPanel {
         		});
         		deletePanel.add(deleteLabel);
         		entryPanel.add(deletePanel);
-        		
+
+        		// 빈 패널
+        		JPanel emptyPanel = new JPanel();
+        		JLabel emptyLabel = new JLabel("", SwingConstants.CENTER);
+        		emptyLabel.setForeground(Color.WHITE);
+        		emptyPanel.setBackground(Color.WHITE);
+        		emptyPanel.add(emptyLabel);
+        		entryPanel.add(emptyPanel);
+
         		tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
         	}
         	
@@ -148,8 +160,11 @@ public class MyPage extends JPanel {
         	deleteLabel.addMouseListener(new MouseAdapter() {
         		@Override
         		public void mouseClicked(MouseEvent e) {
-            	userDao.deleteUser(userNo);
-            	// 메인 페이지로 돌아가는 코드 추가
+        			int result = JOptionPane.showConfirmDialog(null, "정말 삭제하시겠습니까?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                    	if (result == JOptionPane.YES_OPTION) {
+                    		userDao.deleteUser(userNo);
+                    	}
+                    	main.logininit(); 
         		}
         	});
         	

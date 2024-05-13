@@ -44,6 +44,12 @@ public class Main extends JFrame {
         myPageBtn.addActionListener(listener);
 
         setLocationRelativeTo(null);
+        
+        // 맨 처음 화면을 복권 패널로 설정
+        Lottery lotteryPanel = new Lottery(userNo);
+        add("Center", lotteryPanel);
+        currentPanel = lotteryPanel;
+        
         setVisible(true);
     }
     
@@ -66,7 +72,6 @@ public class Main extends JFrame {
                 Lottery lotteryPanel = new Lottery(userNo);
                 add("Center", lotteryPanel);
                 currentPanel = lotteryPanel;
-
             } else if (btn == category.getLoginout()) {
                 // 로그인 버튼 클릭 시
 	           if(category.getLoginout().getText().equals("로그인")) {
