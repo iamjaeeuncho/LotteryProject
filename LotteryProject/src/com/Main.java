@@ -46,7 +46,7 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
         
         // 맨 처음 화면을 복권 패널로 설정
-        Lottery lotteryPanel = new Lottery(userNo);
+        Lottery_test lotteryPanel = new Lottery_test(userNo);
         add("Center", lotteryPanel);
         currentPanel = lotteryPanel;
         
@@ -55,7 +55,7 @@ public class Main extends JFrame {
     
     public void logininit() {
         removeCurrentPanel(); // 기존 패널 제거
-        currentPanel = new Lottery(userNo); // 새로운 Lottery 패널 생성
+        currentPanel = new Lottery_test(userNo); // 새로운 Lottery 패널 생성
         add("Center", currentPanel); // 새로운 패널 추가
         category.updateLoginButton(); // 로그인 성공 후에 카테고리의 로그인 버튼을 업데이트
         revalidate(); // 변경된 패널 다시 그리기
@@ -79,7 +79,7 @@ public class Main extends JFrame {
             
             if (btn == category.getLottery()) {
                 removeCurrentPanel();
-                Lottery lotteryPanel = new Lottery(userNo);
+                Lottery_test lotteryPanel = new Lottery_test(userNo);
                 add("Center", lotteryPanel);
                 currentPanel = lotteryPanel;
             } else if (btn == category.getLoginout()) {

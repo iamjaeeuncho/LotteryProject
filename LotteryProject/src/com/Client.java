@@ -199,7 +199,7 @@ public class Client extends JFrame {
 
     private void setupNetworking() {
         try {
-            socket = new Socket("192.168.230.39", 9999);
+            socket = new Socket("192.168.230.38", 9999);
             OutputStream os = socket.getOutputStream();
             bw = new BufferedWriter(new OutputStreamWriter(os));
             prinWrite = new PrintWriter(bw, true);
