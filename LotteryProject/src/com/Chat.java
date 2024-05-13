@@ -27,6 +27,8 @@ public class Chat extends JPanel {
     private int chatUser;
     private String chatRoom;
     private int chatRoomNum;
+    private JPanel tablePanel;
+    private JScrollPane tableScrollPane;
 
     private Category category = new Category(userNo);
     private ChatDAO cdao = new ChatDAO();
@@ -57,15 +59,14 @@ public class Chat extends JPanel {
         menuPanel.add(menuLabel);
 
         // 2. 채팅방 생성 내역 테이블
-        JPanel tablePanel = new JPanel();
+        tablePanel = new JPanel();
         tablePanel.setLayout(new GridLayout(0, 1));
         tablePanel.setBackground(Color.WHITE);
 
-        JScrollPane tableScrollPane = new JScrollPane(tablePanel);
+        tableScrollPane = new JScrollPane(tablePanel);
         tableScrollPane.setPreferredSize(new Dimension(900, 400));
         tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        System.out.println(userNo);
         if (userNo == 0) {
             JPanel logoutPanel = new JPanel();
             logoutPanel.setPreferredSize(new Dimension(1000, 50));
@@ -81,8 +82,8 @@ public class Chat extends JPanel {
 
             for (int i = 0; i < chatList.size(); i++) {
                 JPanel entryPanel = new JPanel(new GridLayout(1, 2)); // 메세지, 삭제를 한 줄에 표시
-                entryPanel.setPreferredSize(new Dimension(1000, 30));
-                entryPanel.setBackground(Color.WHITE);
+                entryPanel.setPreferredSize(new Dimension(1000, 50));
+                entryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
                 chatUser = chatList.get(i).getUserNo();
                 chatRoom = chatList.get(i).getChatName();
@@ -109,6 +110,7 @@ public class Chat extends JPanel {
                         public void mouseClicked(MouseEvent e) {
                             if (userNo == chatUser) {
                                 addDeleteMouseListener(deleteLabel, chatRoomNum);
+                                removeEntryPanel(entryPanel);
                             } else {
                                 JOptionPane.showMessageDialog(null, "채팅방 생성자만 방을 삭제할 수 있습니다");
                                 return;
@@ -122,7 +124,6 @@ public class Chat extends JPanel {
                 }
 
                 entryPanel.add(deletePanel);
-                entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
             }
 
@@ -199,5 +200,18 @@ public class Chat extends JPanel {
                 }
             }
         });
+    }
+    
+    private void removeEntryPanel(JPanel entryPanel) {
+        tablePanel.remove(entryPanel);
+        adjustScrollPaneHeight();
+    }
+
+    private void adjustScrollPaneHeight() {
+        int panelCount = tablePanel.getComponentCount();
+        int newHeight = panelCount * 60;
+        tablePanel.setPreferredSize(new Dimension(900, newHeight));
+        tableScrollPane.revalidate();
+        tableScrollPane.repaint();
     }
 }
