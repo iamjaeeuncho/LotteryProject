@@ -39,8 +39,6 @@ public class MyPage extends JPanel {
         setVisible(true);
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        lotteryResults = lotteryDao.showLottery(userNo);
-
         // 1. 메뉴바
         JPanel menuPanel = new JPanel(new GridBagLayout());
         JLabel menuLabel = new JLabel("번호 생성 내역", SwingConstants.CENTER);
@@ -69,6 +67,8 @@ public class MyPage extends JPanel {
             mainPanel.add(logoutPanel, BorderLayout.CENTER);
             mainPanel.setVisible(true);
         } else {
+        	lotteryResults = lotteryDao.showLottery(userNo);
+        	
             for (Map.Entry<Integer, String[]> entry : lotteryResults.entrySet()) {
             	final int lotteryNo = entry.getKey();
             	lotteryInfo = entry.getValue();

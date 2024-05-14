@@ -71,7 +71,7 @@ public class Chat extends JPanel {
             JPanel logoutPanel = new JPanel();
             logoutPanel.setPreferredSize(new Dimension(1000, 50));
 
-            JLabel logoutLabel = new JLabel("로그인 한 사용자만 내 정보를 볼 수 있습니다", SwingConstants.CENTER);
+            JLabel logoutLabel = new JLabel("로그인 한 사용자만 채팅에 참여할 수 있습니다", SwingConstants.CENTER);
             logoutPanel.add(logoutLabel);
 
             // 메인 배치

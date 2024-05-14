@@ -436,7 +436,7 @@ public class Lottery extends JPanel {
     }
     
     private void getResultState() {
-    	for (int i = 0; i <= RESULT_ROWS; i++) {
+    	for (int i = 0; i < RESULT_ROWS; i++) {
             if (resultLabels[i][1].getText().isEmpty()) {
                 allSlotsFilled = false;
                 break;
