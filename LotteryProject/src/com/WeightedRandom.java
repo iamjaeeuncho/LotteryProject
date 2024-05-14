@@ -105,8 +105,7 @@ public class WeightedRandom {
         return new ArrayList<>(selectedNumbersSet);
     }
 
-
-//    // 검증 코드
+// // 검증 코드
 //    public static void main(String[] args) {
 //        // 결과를 저장할 맵 초기화
 //        Map<Integer, Integer> numberCounts = new HashMap<>();
@@ -125,13 +124,13 @@ public class WeightedRandom {
 //            }
 //        }
 //
-//        // 각 숫자의 빈도수 출력
-//        System.out.println("각 숫자의 빈도수:");
+//        // 각 숫자의 확률 출력
 //        for (Map.Entry<Integer, Integer> entry : numberCounts.entrySet()) {
 //            int number = entry.getKey();
 //            int count = entry.getValue();
-//            double probability = (double) count / simulations;
-//            System.out.println(number + " " + probability);
+//            double probability = (double) count / (simulations * 6); // 6은 복권에서 선택되는 번호의 개수
+////            System.out.println(number + " " + probability);
+//            System.out.println(probability);
 //        }
 //    }
 }
