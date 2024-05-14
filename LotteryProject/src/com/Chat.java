@@ -35,7 +35,7 @@ public class Chat extends JPanel {
     private UserDAO udao = new UserDAO();
 
     public Chat(int userNo) {
-        this.userNo=userNo;
+        this.userNo = userNo;
 //        setLayout(null);
         refreshChatList();
     }
@@ -86,12 +86,13 @@ public class Chat extends JPanel {
                 entryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
                 chatUser = chatList.get(i).getUserNo();
-                chatRoom = chatList.get(i).getChatName();
+//                chatRoom = 
                 chatRoomNum = chatList.get(i).getChatNo();
 
                 // 채팅방 메세지
                 JPanel ChatPanel = new JPanel();
-                JLabel ChatLabel = new JLabel(chatRoom, SwingConstants.CENTER);
+                
+                JLabel ChatLabel = new JLabel(chatList.get(i).getChatName(), SwingConstants.CENTER);
 
                 addRoomMouseListener(ChatLabel, chatRoomNum);
 
@@ -102,30 +103,21 @@ public class Chat extends JPanel {
                 // 삭제 라벨
                 JPanel deletePanel = new JPanel();
                 deletePanel.setBackground(Color.WHITE);
-                System.out.println(userNo);
-                System.out.println(chatUser);
+
                 if (userNo == chatUser) {
-                    JLabel deleteLabel = new JLabel("삭제", SwingConstants.CENTER);
-                    deleteLabel.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            if (userNo == chatUser) {
-                                addDeleteMouseListener(deleteLabel, chatRoomNum);
-                                removeEntryPanel(entryPanel);
-                            } else {
-                                JOptionPane.showMessageDialog(null, "채팅방 생성자만 방을 삭제할 수 있습니다");
-                                return;
-                            }
-                        }
-                    });
-                    deletePanel.add(deleteLabel);
+                    JLabel chatRoomDel = new JLabel("삭제", SwingConstants.CENTER);
+                    deletePanel.add(chatRoomDel);
+                    addDeleteMouseListener(chatRoomDel, chatList.get(i).getChatNo());
+                    
                 } else if (userNo != chatUser) {
                     JLabel emptyLabel = new JLabel("", SwingConstants.CENTER);
                     deletePanel.add(emptyLabel);
+                    
                 }
 
                 entryPanel.add(deletePanel);
                 tablePanel.add(entryPanel); // 테이블 패널에 각각의 항목 패널 추가
+                
             }
 
             // 3. 채팅방 생성 버튼
@@ -143,13 +135,14 @@ public class Chat extends JPanel {
                             e1.printStackTrace();
                         }
                         refreshChatList();
+
                     } else {
                         JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
                     }
                 }
             });
 
-            addRoomMouseListener(makeRoomLabel, chatRoomNum);
+//            addRoomMouseListener(makeRoomLabel, chatRoomNum);
 
             buttonPanel.setPreferredSize(new Dimension(700, 50));
             buttonPanel.add(makeRoomLabel);
@@ -180,17 +173,20 @@ public class Chat extends JPanel {
         });
     }
     
-    // 채팅방 클릭 이벤트 설정
+ // 채팅방 클릭 이벤트 설정
     private void addRoomMouseListener(JLabel label, int chatNo) {
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (userNo > 0) {
-                    int result = JOptionPane.showConfirmDialog(null, "채팅방에 참여하시겠습니까?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                    String userName = udao.userName(userNo);
+                    int result = JOptionPane.showConfirmDialog(null, "방에 참여하시겠습니까?", "Confirmation",
+                            JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
-                        String userName = udao.userName(userNo);
-                        Client client = new Client(userNo, userName, chatNo);
-                        client.setVisible(true);
+                    // 채팅방에 바로 참여
+                    Client client = new Client(userNo, userName, chatNo);
+                    client.setLocationRelativeTo(null); // 창을 화면 중앙에 위치시킴
+                    client.setVisible(true);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
@@ -198,6 +194,8 @@ public class Chat extends JPanel {
             }
         });
     }
+
+
     
     private void removeEntryPanel(JPanel entryPanel) {
         tablePanel.remove(entryPanel);

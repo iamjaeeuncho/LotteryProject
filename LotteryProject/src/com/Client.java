@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -40,6 +42,7 @@ public class Client extends JFrame {
     private JTextField textField;
     private JTextArea textArea;
     private ChatDAO cdao = new ChatDAO();
+//    private BufferedReader serverReader;
 
     private String userName;
     private int userNo;
@@ -73,7 +76,7 @@ public class Client extends JFrame {
         public void run() {
             try {
                 String message;
-                while ((message = br.readLine()) != null) {
+                while (!socket.isClosed() && (message = br.readLine()) != null) {
                     final String msg = message;
                     EventQueue.invokeLater(new Runnable() {
                         public void run() {
@@ -103,6 +106,8 @@ public class Client extends JFrame {
             }
         }
     });
+
+
 
     public void initializeUI() {
         setBounds(100, 100, 800, 600); // Increase the size of the main frame
@@ -153,18 +158,12 @@ public class Client extends JFrame {
         // 접속 중인 사용자 라벨을 스크롤바 바깥 오른쪽 상단에 위치시키기
         JButton userLabel = new JButton("접속 중인 사용자");
         Dimension labelSize = userLabel.getPreferredSize();
-        userLabel.setBounds(10, 10, labelSize.width, labelSize.height); // Adjust the position of the label
+        userLabel.setBounds(570, 10, labelSize.width, labelSize.height); // Adjust the position of the label
         contentPane.add(userLabel);
 
         userLabel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame newUserWindow = new JFrame("접속 중인 유저");
-                newUserWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                newUserWindow.setBounds(200, 200, 400, 300);
-                JPanel newUserPanel = new JPanel();
-                newUserWindow.setContentPane(newUserPanel);
-
                 // 서버로 'online' 메시지 보내기
                 prinWrite.println("online");
 
@@ -174,25 +173,22 @@ public class Client extends JFrame {
                     while ((response = br.readLine()) != null) {
                         if (response.startsWith("현재 접속 중인 사용자 목록:")) {
                             // 유저 목록을 JTextArea에 추가
-                            JTextArea userListArea = new JTextArea();
-                            userListArea.setEditable(false); // 수정 불가능하도록 설정
-                            userListArea.setFont(new Font("SansSerif", Font.PLAIN, 20)); // 글꼴 크기 설정
                             String[] userList = {};
                             if (response.startsWith("현재 접속 중인 사용자 목록:") && response.length() > 26) {
                                 userList = response.substring(26).split("\n");
+                                for (String user : userList) {
+                                    textArea.append(user + "\n");
+                                }
+//                                textArea.add(new JScrollPane()); // JTextArea를 JScrollPane에 추가
+                                break; // 유저 목록을 추가한 후 반복문 종료
                             }
-                            for (String user : userList) {
-                                userListArea.append(user + "\n");
-                            }
-                            newUserPanel.add(new JScrollPane(userListArea)); // JTextArea를 JScrollPane에 추가
-                            break; // 유저 목록을 추가한 후 반복문 종료
                         }
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
-                newUserWindow.setVisible(true);
+                textArea.setVisible(true);
             }
         });
     }
@@ -206,7 +202,7 @@ public class Client extends JFrame {
             prinWrite.println(userName);
 
             InputStream is = socket.getInputStream();
-            br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is)); // serverReader 대신 br 사용
 
             receiveThread.start();
 
@@ -216,6 +212,7 @@ public class Client extends JFrame {
             e.printStackTrace();
         }
     }
+
 
     private void loadMessages() {
         textArea.setText(""); // 기존 메시지를 모두 지움
@@ -234,4 +231,5 @@ public class Client extends JFrame {
             textField.setText("");
         }
     }
+
 }
