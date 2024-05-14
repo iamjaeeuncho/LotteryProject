@@ -1,9 +1,11 @@
 package com;
 
-import java.awt.Font;
+import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
@@ -15,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import com.dao.UserDAO;
 
@@ -36,6 +39,28 @@ public class Login extends JPanel implements ActionListener {
         ImageIcon bsImg = new ImageIcon(Login.class.getResource("/img/icon.png"));
         Image scaledImage = bsImg.getImage().getScaledInstance(bsImg.getIconWidth() / 2, bsImg.getIconHeight() / 2, Image.SCALE_SMOOTH);
         bsImg = new ImageIcon(scaledImage);
+        
+        img.addMouseListener(new MouseAdapter() {
+            private Timer timer;
+            private int deltaX = 2;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                timer = new Timer(10, (event) -> {
+                    img.setLocation(img.getX() + deltaX, img.getY());
+                    if (img.getX() <= 320 || img.getX() >= 520) {
+                        deltaX *= -1;
+                    }
+                });
+                timer.start();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                timer.stop();
+                img.setLocation(420, img.getY());
+            }
+        });
         img.setIcon(bsImg);
         add(img);
 
