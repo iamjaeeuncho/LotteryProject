@@ -156,41 +156,41 @@ public class Client extends JFrame {
         });
 
         // 접속 중인 사용자 라벨을 스크롤바 바깥 오른쪽 상단에 위치시키기
-        JButton userLabel = new JButton("접속 중인 사용자");
-        Dimension labelSize = userLabel.getPreferredSize();
-        userLabel.setBounds(570, 10, labelSize.width, labelSize.height); // Adjust the position of the label
-        contentPane.add(userLabel);
+//        JButton userLabel = new JButton("접속 중인 사용자");
+//        Dimension labelSize = userLabel.getPreferredSize();
+//        userLabel.setBounds(570, 10, labelSize.width, labelSize.height); // Adjust the position of the label
+//        contentPane.add(userLabel);
 
-        userLabel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 서버로 'online' 메시지 보내기
-                prinWrite.println("online");
-
-                // 서버로부터 온 응답 받기
-                try {
-                    String response;
-                    while ((response = br.readLine()) != null) {
-                        if (response.startsWith("현재 접속 중인 사용자 목록:")) {
-                            // 유저 목록을 JTextArea에 추가
-                            String[] userList = {};
-                            if (response.startsWith("현재 접속 중인 사용자 목록:") && response.length() > 26) {
-                                userList = response.substring(26).split("\n");
-                                for (String user : userList) {
-                                    textArea.append(user + "\n");
-                                }
-//                                textArea.add(new JScrollPane()); // JTextArea를 JScrollPane에 추가
-                                break; // 유저 목록을 추가한 후 반복문 종료
-                            }
-                        }
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-                textArea.setVisible(true);
-            }
-        });
+//        userLabel.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // 서버로 'online' 메시지 보내기
+//                prinWrite.println("online");
+//
+//                // 서버로부터 온 응답 받기
+//                try {
+//                    String response;
+//                    while ((response = br.readLine()) != null) {
+//                        if (response.startsWith("현재 접속 중인 사용자 목록:")) {
+//                            // 유저 목록을 JTextArea에 추가
+//                            String[] userList = {};
+//                            if (response.startsWith("현재 접속 중인 사용자 목록:") && response.length() > 26) {
+//                                userList = response.substring(26).split("\n");
+//                                for (String user : userList) {
+//                                    textArea.append(user + "\n");
+//                                }
+////                                textArea.add(new JScrollPane()); // JTextArea를 JScrollPane에 추가
+//                                break; // 유저 목록을 추가한 후 반복문 종료
+//                            }
+//                        }
+//                    }
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//
+//                textArea.setVisible(true);
+//            }
+//        });
     }
 
     private void setupNetworking() {

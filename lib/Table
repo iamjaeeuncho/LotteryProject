@@ -10,7 +10,7 @@ CREATE TABLE LOTTERY_USER (
 );
 
 CREATE TABLE LOTTERY (
-	lotteryNo  NUMBER(5)generated always as identity NOT NULL,
+	lotteryNo  NUMBER(5) generated always as identity NOT NULL,
 	userNo	NUMBER(5)	NOT NULL,
 	createdAt	TIMESTAMP	NOT NULL,
 	modifedAt TIMESTAMP NULL,
@@ -75,7 +75,7 @@ COMMENT ON TABLE Lottery IS '복권 테이블';
 COMMENT ON  COLUMN  Lottery.lotteryNo  IS  '복권 고유 번호';
 COMMENT ON  COLUMN  Lottery.userNo  IS  '유저 고유번호';
 COMMENT ON  COLUMN  Lottery.createdAt  IS  '복권 생성일자';
-COMMENT ON  COLUMN  Lottery.modifiedAt  IS  '복권 수정일자';
+COMMENT ON  COLUMN  Lottery.modifedAt  IS  '복권 수정일자';
 COMMENT ON  COLUMN  Lottery.category  IS  '복권 번호';
 COMMENT ON  COLUMN  Lottery.lottery1  IS  '복권 번호2';
 COMMENT ON  COLUMN  Lottery.lottery2  IS  '복권 번호3';
@@ -92,7 +92,7 @@ COMMENT ON  COLUMN  LOTTERY_USER.userId  IS  '유저 아이디';
 COMMENT ON  COLUMN  LOTTERY_USER.userPw  IS  '유저 비밀번호';
 COMMENT ON  COLUMN  LOTTERY_USER.email  IS  '이메일';
 COMMENT ON  COLUMN  LOTTERY_USER.createdAt  IS  '유저 생성일';
-COMMENT ON  COLUMN  LOTTERY_USER.modifiedAt  IS  '유저 삭제일';
+COMMENT ON  COLUMN  LOTTERY_USER.modifedAt  IS  '유저 삭제일';
 COMMENT ON  COLUMN  LOTTERY_USER.status  IS  '유저 상태';
 
 COMMENT ON TABLE MESSAGE IS '메세지 테이블';
