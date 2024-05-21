@@ -12,14 +12,11 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +25,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
 import com.dao.ChatDAO;
 import com.dto.MessageVO;
 
@@ -42,7 +38,7 @@ public class Client extends JFrame {
     private JTextField textField;
     private JTextArea textArea;
     private ChatDAO cdao = new ChatDAO();
-//    private BufferedReader serverReader;
+    private Thread receiveThread;
 
     private String userName;
     private int userNo;
@@ -70,69 +66,31 @@ public class Client extends JFrame {
     }
 
     public Client() {
+        initializeUI();
     }
 
-    Thread receiveThread = new Thread(new Runnable() {
-        public void run() {
-            try {
-                String message;
-                while (!socket.isClosed() && (message = br.readLine()) != null) {
-                    final String msg = message;
-                    EventQueue.invokeLater(new Runnable() {
-                        public void run() {
-                            // 일반 메시지일 경우
-                            textArea.append(msg + "\n");
-                            textArea.setCaretPosition(textArea.getDocument().getLength());
-                        }
-                    });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                // 클라이언트 종료 시 소켓 연결 및 스트림 닫기
-                try {
-                    if (socket != null) {
-                        socket.close();
-                    }
-                    if (br != null) {
-                        br.close();
-                    }
-                    if (bw != null) {
-                        bw.close();
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    });
-
-
-
-    public void initializeUI() {
-        setBounds(100, 100, 800, 600); // Increase the size of the main frame
+    private void initializeUI() {
+        setBounds(100, 100, 800, 600);
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10)); // Increase the border size
+        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        // JScrollPane을 생성하여 JTextArea를 감싸기
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(100, 50, 600, 400); // Adjust the bounds of the scroll pane
+        scrollPane.setBounds(100, 50, 600, 400);
         contentPane.add(scrollPane);
 
-        // JTextArea를 JScrollPane에 추가
         textArea = new JTextArea();
-        textArea.setEditable(false); // 수정 불가능하도록 설정
-        textArea.setFont(new Font("SansSerif", Font.PLAIN, 20)); // 글꼴 크기 설정
+        textArea.setEditable(false);
+        textArea.setFont(new Font("SansSerif", Font.PLAIN, 20));
         scrollPane.setViewportView(textArea);
 
         JButton btnNewButton = new JButton("전송");
-        btnNewButton.setBounds(650, 480, 100, 39); // Adjust the position of the button
+        btnNewButton.setBounds(650, 480, 100, 39);
         contentPane.add(btnNewButton);
 
         textField = new JTextField();
-        textField.setBounds(100, 480, 540, 39); // Adjust the width of the text field
+        textField.setBounds(100, 480, 540, 39);
         textField.setColumns(10);
         contentPane.add(textField);
 
@@ -141,6 +99,7 @@ public class Client extends JFrame {
         setupNetworking();
 
         btnNewButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 sendMessage();
             }
@@ -155,81 +114,85 @@ public class Client extends JFrame {
             }
         });
 
-        // 접속 중인 사용자 라벨을 스크롤바 바깥 오른쪽 상단에 위치시키기
-//        JButton userLabel = new JButton("접속 중인 사용자");
-//        Dimension labelSize = userLabel.getPreferredSize();
-//        userLabel.setBounds(570, 10, labelSize.width, labelSize.height); // Adjust the position of the label
-//        contentPane.add(userLabel);
+        JButton userLabel = new JButton("접속 중인 사용자");
+        Dimension labelSize = userLabel.getPreferredSize();
+        userLabel.setBounds(570, 10, labelSize.width, labelSize.height);
+        contentPane.add(userLabel);
 
-//        userLabel.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // 서버로 'online' 메시지 보내기
-//                prinWrite.println("online");
-//
-//                // 서버로부터 온 응답 받기
-//                try {
-//                    String response;
-//                    while ((response = br.readLine()) != null) {
-//                        if (response.startsWith("현재 접속 중인 사용자 목록:")) {
-//                            // 유저 목록을 JTextArea에 추가
-//                            String[] userList = {};
-//                            if (response.startsWith("현재 접속 중인 사용자 목록:") && response.length() > 26) {
-//                                userList = response.substring(26).split("\n");
-//                                for (String user : userList) {
-//                                    textArea.append(user + "\n");
-//                                }
-////                                textArea.add(new JScrollPane()); // JTextArea를 JScrollPane에 추가
-//                                break; // 유저 목록을 추가한 후 반복문 종료
-//                            }
-//                        }
-//                    }
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//
-//                textArea.setVisible(true);
-//            }
-//        });
+        userLabel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                prinWrite.println("online_request");
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                prinWrite.println("exit");
+                System.out.println("채팅방이 닫혔습니다.");
+            }
+        });
     }
 
     private void setupNetworking() {
         try {
-            socket = new Socket("192.168.230.38", 9999);
-            OutputStream os = socket.getOutputStream();
-            bw = new BufferedWriter(new OutputStreamWriter(os));
-            prinWrite = new PrintWriter(bw, true);
-            prinWrite.println(userName);
-
-            InputStream is = socket.getInputStream();
-            br = new BufferedReader(new InputStreamReader(is)); // serverReader 대신 br 사용
-
-            receiveThread.start();
-
+            if (socket == null || socket.isClosed()) {
+                socket = new Socket("192.168.230.38", 9999);
+                br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                prinWrite = new PrintWriter(bw, true);
+                prinWrite.println(userName);
+                prinWrite.println(chatNo);
+                startReceiving(); // 메시지를 받는 쓰레드 시작
+            }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "네트워크 연결 실패: " + e.getMessage(), "연결 오류",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "네트워크 연결 실패: " + e.getMessage(), "연결 오류", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
 
+    private void startReceiving() {
+        receiveThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String message;
+                    while (!socket.isClosed() && (message = br.readLine()) != null) {
+                        final String msg = message;
+                        EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                textArea.append(msg + "\n");
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    if (!socket.isClosed()) {
+                        e.printStackTrace();
+                    }
+                } 
+            }
+        });
+        receiveThread.start();
+    }
 
     private void loadMessages() {
-        textArea.setText(""); // 기존 메시지를 모두 지움
+        textArea.setText("");
         List<MessageVO> mesgList = cdao.mesgList(chatNo);
-        for (int i = 0; i < mesgList.size(); i++) {
-            textArea.append(mesgList.get(i).userName + ": " + mesgList.get(i).content + "\n");
+        for (MessageVO messageVO : mesgList) {
+            textArea.append(messageVO.getUserName() + ": " + messageVO.getContent() + "\n");
         }
     }
 
     private void sendMessage() {
         if (!textField.getText().isEmpty()) {
             String message = textField.getText();
-            // 그 외의 경우에는 일반 메시지를 전송한다.
-            cdao.saveChat(userNo, message, chatNo);
-            prinWrite.println(userName + ": " + message);
+            if (message.equals("online")) {
+                prinWrite.println("online_request");
+            } else {
+                cdao.saveChat(userNo, message, chatNo);
+                prinWrite.println(userName + ": " + message);
+            }
             textField.setText("");
         }
     }
-
 }

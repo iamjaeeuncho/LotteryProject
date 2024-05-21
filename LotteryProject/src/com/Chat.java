@@ -182,6 +182,7 @@ public class Chat extends JPanel {
                     String userName = udao.userName(userNo);
                     int result = JOptionPane.showConfirmDialog(null, "방에 참여하시겠습니까?", "Confirmation",
                             JOptionPane.YES_NO_OPTION);
+                    System.out.println("채팅방 확인1"+userNo+ userName+ chatNo);
                     if (result == JOptionPane.YES_OPTION) {
                     // 채팅방에 바로 참여
                     Client client = new Client(userNo, userName, chatNo);
