@@ -1,9 +1,10 @@
 <h1>복권 번호 생성기</h1>
 <br />
 
-<h3>프로젝트 기간</h3>
+<h3>프로젝트 소개</h3>
 <ul>
-  <li>2024.04.30 - 2024.05.13 (총 14일)</li>
+  <li>기간: 2024.04.30 - 2024.05.13 (총 14일)</li>
+  <li>인원: 2명</li>
 </ul>
 <br />
 
@@ -12,6 +13,10 @@
   <li>개발 환경: Ecplipse IDE, SQL Developer, Git</li>
   <li>기술 스택: Java 17, Oracle 21c, PL/SQL, Swing, Lombok, HikariCP</li>
 </ul>
+<br />
+
+<h3>DB 설계 </h3>
+<img src="https://github.com/user-attachments/assets/7e26323c-5a22-4e14-857e-06fc291d82c6">
 <br />
 
 <h3>주요 기능</h3>
